@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/boardml/common/identifier.schema.json",
+  "title": "Identifier",
+  "type": "string",
+  "pattern": "^[A-Za-z_][A-Za-z0-9_\\-.]*$"
+}
