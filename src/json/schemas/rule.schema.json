@@ -3,7 +3,7 @@
   "$id": "https://example.com/boardml/core/rule.schema.json",
   "title": "Rule",
   "type": "object",
-  "required": ["termination"],
+  "required": [],
   "properties": {
     "invariants": {"type": "array", "items": {"$ref": "https://example.com/boardml/common/expr.schema.json"}},
     "triggers": {"type": "array", "items": {"$ref": "https://example.com/boardml/core/trigger.schema.json"}}

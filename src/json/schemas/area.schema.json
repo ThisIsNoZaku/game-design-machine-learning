@@ -3,7 +3,7 @@
   "$id": "https://example.com/boardml/core/area.schema.json",
   "title": "Area",
   "type": "object",
-  "required": ["id", "kind"],
+  "required": ["id"],
   "properties": {
     "id": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
     "name": {"type": "string"},
