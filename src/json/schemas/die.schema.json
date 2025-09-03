@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/boardml/rng/die.schema.json",
+  "title": "RNG Config",
+  "type": "object",
+  "properties": {
+    "seed": {"type": "integer"},
+    "dice": {
+      "type": "array",
+      "items": {
+        "$ref": "https://example.com/boardml/rng/die.schema.json#/$defs/DieSpec"
+      }
+    },
+    "shuffle": {"type": "string", "enum": ["fisher-yates", "riffle", "none"], "default": "fisher-yates"}
+  },
+  "$defs": {
+    "DieSpec": {
+      "type": "object",
+      "required": ["id", "sides"],
+      "properties": {
+        "id": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
+        "sides": {"type": "integer", "minimum": 2},
+        "faces": {"type": "array", "items": {"oneOf": [{"type": "integer"}, {"type": "string"}]}},
+        "weighted": {"type": "array", "items": {"type": "number", "exclusiveMinimum": 0}}
+      }
+    }
+  }
+}

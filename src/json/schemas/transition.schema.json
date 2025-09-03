@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/boardml/common/transition.schema.json",
+  "title": "Transition",
+  "type": "object",
+  "required": ["to", "when"],
+  "properties": {
+    "to": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
+    "when": {"$ref": "https://example.com/boardml/common/expr.schema.json"},
+    "priority": {"type": "integer", "default": 0}
+  }
+}

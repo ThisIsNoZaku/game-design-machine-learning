@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/boardml/core/area.schema.json",
+  "title": "Area",
+  "type": "object",
+  "required": ["id", "kind"],
+  "properties": {
+    "id": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
+    "name": {"type": "string"},
+    "owner": {"type": "string", "description": "Agent id (for hands, player boards)"},
+    "shape": {
+      "type": "object",
+      "properties": {
+        "rows": {"type": "integer", "minimum": 1},
+        "cols": {"type": "integer", "minimum": 1},
+        "adjacency": {"type": "string", "enum": ["orth", "diag", "hex", "graph"]}
+      }
+    },
+    "links": {"type": "array", "items": {"type": "string"}},
+    "constraints": {"type": "array", "items": {"$ref": "https://example.com/boardml/common/expr.schema.json"}}
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/boardml/core/phases.schema.json",
+  "title": "Phases",
+  "type": "object",
+  "required": ["initial", "nodes"],
+  "properties": {
+    "initial": {"type": "string"},
+    "nodes": {"type": "array", "items": {"$ref": "https://example.com/boardml/core/phaseNode.schema.json"}}
+  }
+}

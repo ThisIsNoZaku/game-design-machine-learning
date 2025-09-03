@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/boardml/core/agent.schema.json",
+  "title": "Agent",
+  "type": "object",
+  "required": ["id", "kind"],
+  "properties": {
+    "id": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
+    "kind": {"type": "string", "enum": ["human", "ai", "neutral", "team"]},
+    "seats": {"type": "integer", "minimum": 1, "default": 1},
+    "properties": {"type": "object", "additionalProperties": true}
+  }
+}

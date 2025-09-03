@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/boardml/core/entity.schema.json",
+  "title": "Entity",
+  "type": "object",
+  "required": ["id", "archetype"],
+  "properties": {
+    "id": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
+    "archetype": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
+    "area": {"type": "string"},
+    "slot": {"type": "string"},
+    "owner": {"type": "string"},
+    "state": {"type": "object", "additionalProperties": {"oneOf": [{"type": "number"}, {"type": "string"}, {"type": "boolean"}]}}
+  }
+}

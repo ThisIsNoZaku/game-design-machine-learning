@@ -26,6 +26,6 @@
     "entities": {"type": "array", "items": {"$ref": "https://example.com/boardml/core/entity.schema.json"}},
     "phases": {"$ref": "https://example.com/boardml/core/phases.schema.json"},
     "actions": {"type": "array", "minItems": 1, "items": {"$ref": "https://example.com/boardml/core/action.schema.json"}},
-    "rules": {"$ref": "https://example.com/boardml/core/rules.schema.json"}
+    "rules": {"type" : "array", "items" : {"$ref": "https://example.com/boardml/core/rule.schema.json"}}
   }
 }

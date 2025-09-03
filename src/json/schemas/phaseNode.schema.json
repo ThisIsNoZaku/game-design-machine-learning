@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/boardml/core/phaseNode.schema.json",
+  "title": "PhaseNode",
+  "type": "object",
+  "required": ["id"],
+  "properties": {
+    "id": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
+    "label": {"type": "string"},
+    "enabledActions": {"type": "array", "items": {"$ref": "https://example.com/boardml/common/identifier.schema.json"}},
+    "onEnter": {"type": "array", "items": {"$ref": "https://example.com/boardml/common/effect.schema.json"}},
+    "onExit": {"type": "array", "items": {"$ref": "https://example.com/boardml/common/effect.schema.json"}},
+    "transitions": {"type": "array", "items": {"$ref": "https://example.com/boardml/common/transition.schema.json"}}
+  }
+}

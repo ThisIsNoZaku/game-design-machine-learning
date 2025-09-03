@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/boardml/common/effect.schema.json",
+  "title": "Effect",
+  "type": "object",
+  "required": ["expr"],
+  "properties": {
+    "expr": {"type": "string"},
+    "chance": {"type": "number", "minimum": 0, "maximum": 1},
+    "if": {"$ref": "https://example.com/boardml/common/expr.schema.json"}
+  }
+}
