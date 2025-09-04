@@ -5,8 +5,8 @@
   "type": "object",
   "required": ["id", "archetype"],
   "properties": {
-    "id": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
-    "archetype": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
+    "id": {"type": "string"},
+    "archetype": {"type": "string"},
     "area": {"type": "string"},
     "slot": {"type": "string"},
     "owner": {"type": "string"},

@@ -5,7 +5,7 @@
   "type": "object",
   "required": ["id", "kind"],
   "properties": {
-    "id": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
+    "id": {"type": "string"},
     "kind": {"type": "string", "enum": ["human", "ai", "neutral", "team"]},
     "seats": {"type": "integer", "minimum": 1, "default": 1},
     "properties": {"type": "object", "additionalProperties": true}

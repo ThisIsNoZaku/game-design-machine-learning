@@ -1,4 +1,4 @@
-import { RuleDocumentValidator } from "../../src/json/RuleDocumentValidator";
+import {RuleDocumentValidator} from "../../src/json/RuleDocumentValidator";
 
 describe("JsonValidator with RuleSchema", () => {
     let validator: RuleDocumentValidator;
@@ -19,10 +19,6 @@ describe("JsonValidator with RuleSchema", () => {
                 "maxPlayers": 4,
                 "difficulty": "medium",
                 "allowSpectators": true
-            },
-            "rng": {
-                "sides": 6,
-                "count": 2
             },
             "agents": [
                 {
@@ -45,30 +41,98 @@ describe("JsonValidator with RuleSchema", () => {
                     "area": "area1"
                 }
             ],
-            "phases": [
-                {
-                    "id": "phase1",
-                    "label": "Setup Phase"
+            "phases": {
+                "initial" : "phase1",
+                "nodes" : {
+                    "phase1": {
+                        "id": "phase1",
+                        "label": "Setup Phase"
+                    }
                 }
-            ],
+            },
             "actions": [
                 {
                     "id": "action1",
                     "type": "move",
-                    "label": "Move Action"
+                    "label": "Move Action",
+                    "actor" : "active",
+                    "decisions" : []
                 }
             ],
             "rules": [
                 {
-                    "id": "rule1",
-                    "condition": "someCondition",
-                    "effect": "someEffect"
+                    "id": "rule1"
                 }
             ]
         }
         expect(validator.validate(input)).toBe(true);
     });
 
+    test("validate should return true for a valid JSON string", () => {
+        const input = `{
+            "metadata": {
+                "id": "game1",
+                "name": "Example Game",
+                "version": 1,
+                "description": "A sample board game schema.",
+                "tags": ["strategy", "multiplayer"]
+            },
+            "parameters": {
+                "maxPlayers": 4,
+                "difficulty": "medium",
+                "allowSpectators": true
+            },
+            "agents": [
+                {
+                    "id": "agent1",
+                    "kind": "human",
+                    "seats": 1
+                }
+            ],
+            "areas": [
+                {
+                    "id": "area1",
+                    "name": "Starting Zone",
+                    "type": "zone"
+                }
+            ],
+            "entities": [
+                {
+                    "id": "entity1",
+                    "archetype": "card1",
+                    "area": "area1"
+                }
+            ],
+            "phases": {
+                "initial" : "phase1",
+                "nodes" : {
+                    "phase1": {
+                        "id": "phase1",
+                        "label": "Setup Phase"
+                    }
+                }
+            },
+            "actions": [
+                {
+                    "id": "action1",
+                    "type": "move",
+                    "label": "Move Action",
+                    "actor" : "active",
+                    "decisions" : []
+                }
+            ],
+            "rules": [
+                {
+                    "id": "rule1"
+                }
+            ]
+        }`;
+        expect(validator.validate(input)).toBe(true);
+    });
+
+    test("validate should throw an error for a non-string, non-object argument", () => {
+        expect(() => validator.validate(42 as any)).toThrow("Input must be a string or an object");
+    });
     // test("validate should return false for an invalid JSON object", () => {
     //     const invalidJsonObject = { name: "John" }; // Missing "age"
     //     expect(validator.validate(invalidJsonObject)).toBe(false);

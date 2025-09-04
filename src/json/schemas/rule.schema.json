@@ -5,7 +5,9 @@
   "type": "object",
   "required": [],
   "properties": {
+    "id" : {"type":  "string"},
     "invariants": {"type": "array", "items": {"$ref": "https://example.com/boardml/common/expr.schema.json"}},
     "triggers": {"type": "array", "items": {"$ref": "https://example.com/boardml/core/trigger.schema.json"}}
-  }
+  },
+  "additionalProperties": false
 }

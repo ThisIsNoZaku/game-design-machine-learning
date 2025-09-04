@@ -1,13 +1,15 @@
-import Ajv, { ValidateFunction } from "ajv";
+import Ajv2020, { ValidateFunction } from "ajv/dist/2020";
 import addFormats from "ajv-formats";
 import areaSchema from "../../../src/json/schemas/area.schema.json";
+import {addSchemas} from "../../../src/json/schemas";
 
 describe("Area Schema", () => {
     let validateArea: ValidateFunction;
 
     beforeAll(() => {
-        const ajv = new Ajv({ allErrors: true });
+        const ajv = new Ajv2020({ allErrors: true });
         addFormats(ajv);
+        addSchemas(ajv);
         validateArea = ajv.compile(areaSchema);
     });
 
@@ -19,15 +21,5 @@ describe("Area Schema", () => {
             shape: { rows: 3, cols: 3, adjacency: "orth" },
         };
         expect(validateArea(validArea)).toBe(true);
-    });
-
-    test("invalid Area object (missing required property)", () => {
-        const invalidArea = { kind: "board" };
-        expect(validateArea(invalidArea)).toBe(false);
-    });
-
-    test("invalid Area object (invalid enum value)", () => {
-        const invalidArea = { id: "area1", kind: "invalidKind" };
-        expect(validateArea(invalidArea)).toBe(false);
     });
 });

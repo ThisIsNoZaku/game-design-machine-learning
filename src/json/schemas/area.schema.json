@@ -5,7 +5,7 @@
   "type": "object",
   "required": ["id"],
   "properties": {
-    "id": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
+    "id": {"type": "string"},
     "name": {"type": "string"},
     "owner": {"type": "string", "description": "Agent id (for hands, player boards)"},
     "shape": {

@@ -3,10 +3,11 @@
   "$id": "https://example.com/boardml/common/transition.schema.json",
   "title": "Transition",
   "type": "object",
-  "required": ["to", "when"],
+  "required": ["to", "from", "trigger"],
   "properties": {
-    "to": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
-    "when": {"$ref": "https://example.com/boardml/common/expr.schema.json"},
-    "priority": {"type": "integer", "default": 0}
-  }
+    "from" : {"type": "array", "items" : {"type": "string"}, "minItems": 1},
+    "to": {"type" : "string"},
+    "trigger": {"$ref": "https://example.com/boardml/common/expr.schema.json"}
+  },
+  "additionalProperties": false
 }

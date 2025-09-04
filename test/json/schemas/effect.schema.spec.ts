@@ -1,13 +1,15 @@
-import Ajv, { ValidateFunction } from "ajv";
+import Ajv2020, { ValidateFunction } from "ajv/dist/2020";
 import addFormats from "ajv-formats";
 import effectSchema from "../../../src/json/schemas/effect.schema.json";
+import {addSchemas} from "../../../src/json/schemas";
 
 describe("Effect Schema", () => {
     let validateEffect: ValidateFunction;
 
     beforeAll(() => {
-        const ajv = new Ajv({ allErrors: true });
+        const ajv = new Ajv2020({ allErrors: true });
         addFormats(ajv);
+        addSchemas(ajv);
         validateEffect = ajv.compile(effectSchema);
     });
 

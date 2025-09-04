@@ -5,7 +5,7 @@
   "type": "object",
   "required": ["id", "kind"],
   "properties": {
-    "id": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
+    "id": {"type": "string"},
     "label": {"type": "string"},
     "kind": {"type": "string", "enum": [
       "select-entity", "select-area", "select-position", "choose-number",
@@ -16,7 +16,7 @@
     "max": {"type": "integer", "minimum": 0},
     "constraints": {"type": "array", "items": {"$ref": "https://example.com/boardml/common/expr.schema.json"}},
     "effects": {"type": "array", "items": {"$ref": "https://example.com/boardml/common/effect.schema.json"}},
-    "dependsOn": {"type": "array", "items": {"$ref": "https://example.com/boardml/common/identifier.schema.json"}},
+    "dependsOn": {"type": "array", "items": {"type" :  "string"}},
     "dice": {"type": "string", "description": "Die id for roll-dice decisions"}
   }
 }

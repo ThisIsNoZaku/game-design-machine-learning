@@ -1,12 +1,19 @@
-import Ajv, { ValidateFunction } from "ajv";
+import { ValidateFunction } from "ajv";
+import Ajv2020 from "ajv/dist/2020";
 import addFormats from "ajv-formats";
 import actionSchema from "../../../src/json/schemas/action.schema.json";
+import decisionSchema from "../../../src/json/schemas/decision.schema.json";
+import effectSchema from "../../../src/json/schemas/effect.schema.json";
+import expressionSchema from "../../../src/json/schemas/expression.schema.json";
 
 describe("Action Schema", () => {
     let validateAction: ValidateFunction;
 
     beforeAll(() => {
-        const ajv = new Ajv({ allErrors: true });
+        const ajv = new Ajv2020({ allErrors: true });
+        ajv.addSchema(decisionSchema, "decision.schema.json");
+        ajv.addSchema(effectSchema, "effect.schema.json");
+        ajv.addSchema(expressionSchema, "expression.schema.json");
         addFormats(ajv);
         validateAction = ajv.compile(actionSchema);
     });

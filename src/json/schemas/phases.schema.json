@@ -6,6 +6,11 @@
   "required": ["initial", "nodes"],
   "properties": {
     "initial": {"type": "string"},
-    "nodes": {"type": "object", "items": {"$ref": "https://example.com/boardml/core/phaseNode.schema.json"}}
+    "nodes": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "https://example.com/boardml/core/phaseNode.schema.json"
+      }
+    }
   }
 }

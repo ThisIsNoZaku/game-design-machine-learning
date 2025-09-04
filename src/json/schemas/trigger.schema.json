@@ -3,11 +3,13 @@
   "$id": "https://example.com/boardml/core/trigger.schema.json",
   "title": "Trigger",
   "type": "object",
-  "required": ["when", "effects"],
+  "required": [],
   "properties": {
-    "id": {"$ref": "https://example.com/boardml/common/identifier.schema.json"},
-    "when": {"$ref": "https://example.com/boardml/common/expr.schema.json"},
+    "id": {
+      "type": "string"
+    },
     "effects": {"type": "array", "items": {"$ref": "https://example.com/boardml/common/effect.schema.json"}},
     "limit": {"type": "integer", "description": "Times this trigger can fire per turn/game"}
-  }
+  },
+  "additionalProperties": false
 }

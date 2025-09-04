@@ -1,4 +1,4 @@
-import Ajv, { ValidateFunction } from "ajv";
+import Ajv2020, { ValidateFunction } from "ajv/dist/2020";
 import addFormats from "ajv-formats";
 import agentSchema from "../../../src/json/schemas/agent.schema.json";
 
@@ -6,7 +6,7 @@ describe("Agent Schema", () => {
     let validateAgent: ValidateFunction;
 
     beforeAll(() => {
-        const ajv = new Ajv({ allErrors: true });
+        const ajv = new Ajv2020({ allErrors: true });
         addFormats(ajv);
         validateAgent = ajv.compile(agentSchema);
     });

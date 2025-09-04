@@ -1,40 +1,14 @@
 import {JSONSchemaType, ValidateFunction} from "ajv";
 import Ajv2020 from "ajv/dist/2020";
-import action from "./schemas/action.schema.json";
-import agent from "./schemas/agent.schema.json";
-import area from "./schemas/area.schema.json";
-import decision from "./schemas/decision.schema.json";
-import die from "./schemas/die.schema.json";
-import effect from "./schemas/effect.schema.json";
-import entity from "./schemas/entity.schema.json";
-import expression from "./schemas/expression.schema.json";
-import game from "./schemas/game.schema.json";
-import identifier from "./schemas/identifier.schema.json";
-import phaseNode from "./schemas/phaseNode.schema.json";
-import phases from "./schemas/phases.schema.json";
-import rule from "./schemas/rule.schema.json";
-import transition from "./schemas/transition.schema.json";
-import trigger from "./schemas/trigger.schema.json";
+import { addSchemas, game} from "./schemas";
+import formatValidationErrors from "./schemas/formatSchemaErrors";
 
 export class RuleDocumentValidator {
-    private validator: ValidateFunction<any>;
+    private readonly validator: ValidateFunction<any>;
 
     constructor() {
         const schema = new Ajv2020();
-        schema.addSchema(action as JSONSchemaType<any>, "action");
-        schema.addSchema(agent as JSONSchemaType<any>, "agent");
-        schema.addSchema(area as JSONSchemaType<any>, "area");
-        schema.addSchema(decision as JSONSchemaType<any>, "decision");
-        schema.addSchema(die as JSONSchemaType<any>, "die");
-        schema.addSchema(effect as JSONSchemaType<any>, "effect");
-        schema.addSchema(entity as JSONSchemaType<any>, "entity");
-        schema.addSchema(expression as JSONSchemaType<any>, "expression");
-        schema.addSchema(identifier as JSONSchemaType<any>, "identifier");
-        schema.addSchema(phaseNode as JSONSchemaType<any>, "phaseNode");
-        schema.addSchema(phases as JSONSchemaType<any>, "phases");
-        schema.addSchema(rule as JSONSchemaType<any>, "rule");
-        schema.addSchema(transition as JSONSchemaType<any>, "transition");
-        schema.addSchema(trigger as JSONSchemaType<any>, "trigger");
+        addSchemas(schema);
         this.validator = schema.compile(game);
 
     }
@@ -50,7 +24,7 @@ export class RuleDocumentValidator {
         }
 
         if(!valid) {
-            return this.validator.errors;
+            throw new Error(formatValidationErrors(this.validator.errors));
         } else {
             return true;
         }
