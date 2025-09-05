@@ -3,29 +3,114 @@
   "$id": "https://example.com/boardml/game.schema.json",
   "title": "BoardML Game Spec (Top-Level)",
   "type": "object",
-  "required": ["metadata", "parameters", "agents", "areas", "entities", "phases", "actions", "rules"],
+  "required": [
+    "metadata",
+    "parameters",
+    "agents",
+    "locations",
+    "entityTypes",
+    "phases",
+    "actions",
+    "rules"
+  ],
   "properties": {
     "metadata": {
       "type": "object",
-      "required": ["id", "version", "name"],
+      "required": [
+        "id",
+        "version"
+      ],
       "properties": {
-        "id": {"type" :  "string"},
-        "name": {"type": "string"},
-        "version": {"type": "integer", "minimum": 1},
-        "description": {"type": "string"},
-        "tags": {"type": "array", "items": {"type": "string"}}
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
     "parameters": {
       "type": "object",
-      "additionalProperties": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "boolean"}]}
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      }
     },
-    "rng": {"$ref": "https://example.com/boardml/rng/die.schema.json"},
-    "agents": {"type": "array", "minItems": 1, "items": {"$ref": "https://example.com/boardml/core/agent.schema.json"}},
-    "areas": {"type": "array", "minItems": 1, "items": {"$ref": "https://example.com/boardml/core/area.schema.json"}},
-    "entities": {"type": "array", "items": {"$ref": "https://example.com/boardml/core/entity.schema.json"}},
-    "phases": {"$ref": "https://example.com/boardml/core/phases.schema.json"},
-    "actions": {"type": "array", "minItems": 1, "items": {"$ref": "https://example.com/boardml/core/action.schema.json"}},
-    "rules": {"type" : "array", "items" : {"$ref": "https://example.com/boardml/core/rule.schema.json"}}
+    "rng": {
+      "$ref": "https://example.com/boardml/rng/rng.schema.json"
+    },
+    "agents": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "definitions": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "https://example.com/boardml/core/agent.schema.json"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "locations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "https://example.com/boardml/core/location.schema.json"
+      }
+    },
+    "entityTypes": {
+      "type": "array",
+      "items": {
+        "$ref": "https://example.com/boardml/core/entity.schema.json"
+      }
+    },
+    "phases": {
+      "$ref": "https://example.com/boardml/core/phases.schema.json"
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "https://example.com/boardml/core/action.schema.json"
+      }
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "https://example.com/boardml/core/rule.schema.json"
+      }
+    }
   }
 }

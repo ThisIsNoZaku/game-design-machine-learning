@@ -6,10 +6,6 @@
   "required": ["id", "archetype"],
   "properties": {
     "id": {"type": "string"},
-    "archetype": {"type": "string"},
-    "area": {"type": "string"},
-    "slot": {"type": "string"},
-    "owner": {"type": "string"},
     "state": {"type": "object", "additionalProperties": {"oneOf": [{"type": "number"}, {"type": "string"}, {"type": "boolean"}]}}
   }
 }

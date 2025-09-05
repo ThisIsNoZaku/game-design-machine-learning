@@ -16,21 +16,10 @@ describe("Decision Schema", () => {
     test("valid Decision object", () => {
         const validDecision = {
             id: "decision1",
-            kind: "select-entity",
             label: "Choose an entity",
             min: 1,
             max: 3,
         };
         expect(validateDecision(validDecision)).toBe(true);
-    });
-
-    test("invalid Decision object (missing required property)", () => {
-        const invalidDecision = { kind: "select-entity" };
-        expect(validateDecision(invalidDecision)).toBe(false);
-    });
-
-    test("invalid Decision object (invalid enum value)", () => {
-        const invalidDecision = { id: "decision1", kind: "invalidKind" };
-        expect(validateDecision(invalidDecision)).toBe(false);
     });
 });

@@ -1,7 +1,9 @@
 import Ajv2020, { ValidateFunction } from "ajv/dist/2020";
 import addFormats from "ajv-formats";
 import entitySchema from "../../../src/json/schemas/entity.schema.json";
-import formatValidationErrors from "../../../src/json/schemas/formatSchemaErrors";
+import formatValidationErrors from "../../../src/json/formatSchemaErrors";
+import {addSchemas} from "../../../src/json/schemas";
+import "jest-expect-message"
 
 describe("Entity Schema", () => {
     let validateEntity: ValidateFunction;
@@ -9,6 +11,7 @@ describe("Entity Schema", () => {
     beforeAll(() => {
         const ajv = new Ajv2020({ allErrors: true });
         addFormats(ajv);
+        addSchemas(ajv);
         validateEntity = ajv.compile(entitySchema);
     });
 

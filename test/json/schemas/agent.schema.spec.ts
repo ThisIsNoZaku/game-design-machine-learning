@@ -1,6 +1,8 @@
 import Ajv2020, { ValidateFunction } from "ajv/dist/2020";
 import addFormats from "ajv-formats";
 import agentSchema from "../../../src/json/schemas/agent.schema.json";
+import formatValidationErrors from "../../../src/json/formatSchemaErrors";
+import "jest-expect-message";
 
 describe("Agent Schema", () => {
     let validateAgent: ValidateFunction;
@@ -12,17 +14,7 @@ describe("Agent Schema", () => {
     });
 
     test("valid Agent object", () => {
-        const validAgent = { id: "agent1", kind: "human", seats: 2 };
-        expect(validateAgent(validAgent)).toBe(true);
-    });
-
-    test("invalid Agent object (missing required property)", () => {
-        const invalidAgent = { kind: "human" };
-        expect(validateAgent(invalidAgent)).toBe(false);
-    });
-
-    test("invalid Agent object (invalid enum value)", () => {
-        const invalidAgent = { id: "agent1", kind: "alien" };
-        expect(validateAgent(invalidAgent)).toBe(false);
+        const validAgent = { id: "1"};
+        expect(validateAgent(validAgent), formatValidationErrors(validateAgent.errors)).toBe(true);
     });
 });

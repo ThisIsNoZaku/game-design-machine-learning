@@ -1,7 +1,8 @@
 import Ajv2020, { ValidateFunction } from "ajv/dist/2020";
 import addFormats from "ajv-formats";
 import dieSchema from "../../../src/json/schemas/die.schema.json";
-import formatValidationErrors from "../../../src/json/schemas/formatSchemaErrors";
+import formatValidationErrors from "../../../src/json/formatSchemaErrors";
+import "jest-expect-message";
 
 describe("Die Schema", () => {
     let validateDie: ValidateFunction;

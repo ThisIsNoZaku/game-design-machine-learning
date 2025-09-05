@@ -1,14 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/boardml/rng/die.schema.json",
+  "$id": "https://example.com/boardml/rng/rng.schema.json",
   "title": "RNG Config",
   "type": "object",
-  "required": ["id", "sides"],
+  "required": [],
   "properties": {
-    "seed": {"type": "integer"},
-    "sides": {
-      "type": "array",
-      "items": {"oneOf": [{"type": "integer"}, {"type": "string"}]}
-    }
+    "seed": {"type": "integer"}
   }
 }

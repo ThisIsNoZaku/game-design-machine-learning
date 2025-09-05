@@ -1,7 +1,7 @@
 import {JSONSchemaType, ValidateFunction} from "ajv";
 import Ajv2020 from "ajv/dist/2020";
-import { addSchemas, game} from "./schemas";
-import formatValidationErrors from "./schemas/formatSchemaErrors";
+import {addSchemas, game} from "./schemas";
+import formatValidationErrors from "./formatSchemaErrors";
 
 export class RuleDocumentValidator {
     private readonly validator: ValidateFunction<any>;
@@ -13,31 +13,33 @@ export class RuleDocumentValidator {
 
     }
 
-    validate(input: string | object) {
-        let valid = false;
-        if(typeof input === "string") {
-            valid = this.validateString(input);
-        } else if(typeof input === "object") {
-            valid = this.validateObject(input);
+    validate(input: string | object):object {
+        let output = null;
+        if (typeof input === "string") {
+            output = this.validateString(input);
+        } else if (typeof input === "object") {
+            output = this.validateObject(input);
         } else {
             throw new Error("Input must be a string or an object");
         }
 
-        if(!valid) {
+        if (!output) {
             throw new Error(formatValidationErrors(this.validator.errors));
         } else {
-            return true;
+            return output;
         }
     }
 
 
-
-    validateString(jsonString: string) {
-        return this.validator(JSON.parse(jsonString)) as boolean;
+    validateString(jsonString: string): object | undefined {
+        var parsed = JSON.parse(jsonString);
+        return this.validateObject(parsed);
     }
 
-    validateObject(jsonObject: object) {
-        return this.validator(jsonObject) as boolean;
+    validateObject(jsonObject: object): object | undefined {
+        if (this.validator(jsonObject)) {
+            return jsonObject;
+        }
     }
 
 }

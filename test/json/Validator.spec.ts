@@ -20,21 +20,21 @@ describe("JsonValidator with RuleSchema", () => {
                 "difficulty": "medium",
                 "allowSpectators": true
             },
-            "agents": [
-                {
-                    "id": "agent1",
-                    "kind": "human",
-                    "seats": 1
+            "agents": {
+                "count": {
+                    "min": 2,
+                    "max": 4
                 }
-            ],
-            "areas": [
+            }
+            ,
+            "locations": [
                 {
                     "id": "area1",
                     "name": "Starting Zone",
                     "type": "zone"
                 }
             ],
-            "entities": [
+            "entityTypes": [
                 {
                     "id": "entity1",
                     "archetype": "card1",
@@ -42,8 +42,8 @@ describe("JsonValidator with RuleSchema", () => {
                 }
             ],
             "phases": {
-                "initial" : "phase1",
-                "nodes" : {
+                "initial": "phase1",
+                "nodes": {
                     "phase1": {
                         "id": "phase1",
                         "label": "Setup Phase"
@@ -55,17 +55,21 @@ describe("JsonValidator with RuleSchema", () => {
                     "id": "action1",
                     "type": "move",
                     "label": "Move Action",
-                    "actor" : "active",
-                    "decisions" : []
+                    "actor": "active",
+                    "decisions": []
                 }
             ],
-            "rules": [
-                {
-                    "id": "rule1"
+            "rules": {
+                "rule1": {
+                    "constrains": {
+                        "entity": {
+                            "foo": "bar"
+                        }
+                    }
                 }
-            ]
+            }
         }
-        expect(validator.validate(input)).toBe(true);
+        expect(validator.validate(input)).toBeTruthy();
     });
 
     test("validate should return true for a valid JSON string", () => {
@@ -82,21 +86,20 @@ describe("JsonValidator with RuleSchema", () => {
                 "difficulty": "medium",
                 "allowSpectators": true
             },
-            "agents": [
-                {
-                    "id": "agent1",
-                    "kind": "human",
-                    "seats": 1
+            "agents": {
+                "count" : {
+                    "min": 2,
+                    "max": 4
                 }
-            ],
-            "areas": [
+            },
+            "locations": [
                 {
                     "id": "area1",
                     "name": "Starting Zone",
                     "type": "zone"
                 }
             ],
-            "entities": [
+            "entityTypes": [
                 {
                     "id": "entity1",
                     "archetype": "card1",
@@ -121,13 +124,17 @@ describe("JsonValidator with RuleSchema", () => {
                     "decisions" : []
                 }
             ],
-            "rules": [
-                {
-                    "id": "rule1"
+            "rules": {
+                "rule1" : {
+                    "constrains" : {
+                        "entity": { 
+                            "foo":"bar"
+                        }
+                    }
                 }
-            ]
+            }
         }`;
-        expect(validator.validate(input)).toBe(true);
+        expect(validator.validate(input)).toBeTruthy();
     });
 
     test("validate should throw an error for a non-string, non-object argument", () => {

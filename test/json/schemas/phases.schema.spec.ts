@@ -3,7 +3,8 @@ import Ajv2020 from "ajv/dist/2020";
 import addFormats from "ajv-formats";
 import phasesSchema from "../../../src/json/schemas/phases.schema.json";
 import {addSchemas} from "../../../src/json/schemas";
-import formatValidationErrors from "../../../src/json/schemas/formatSchemaErrors";
+import formatValidationErrors from "../../../src/json/formatSchemaErrors";
+import "jest-expect-message";
 
 describe("Phases Schema", () => {
     let validatePhases: ValidateFunction;
