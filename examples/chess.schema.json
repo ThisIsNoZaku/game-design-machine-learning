@@ -1,0 +1,497 @@
+{
+  "metadata": {
+    "id": "chess",
+    "version": 1,
+    "description": "A classic two-player strategy board game.",
+    "tags": [
+      "strategy",
+      "board game",
+      "two-player"
+    ]
+  },
+  "parameters": {
+    "timeControl": "standard",
+    "boardSize": 8,
+    "allowUndo": false
+  },
+  "agents": {
+    "count": {
+      "min": 2,
+      "max": 2
+    }
+  },
+  "initial": {
+    "entities": {
+      "1": {
+        "kind": "rook",
+        "controller": 1,
+        "location": "a1"
+      },
+      "2": {
+        "kind": "knight",
+        "controller": 1,
+        "location": "b1"
+      },
+      "3": {
+        "kind": "bishop",
+        "controller": 1,
+        "location": "c1"
+      },
+      "4": {
+        "kind": "queen",
+        "controller": 1,
+        "location": "d1"
+      },
+      "5": {
+        "kind": "king",
+        "controller": 1,
+        "location": "e1"
+      },
+      "6": {
+        "kind": "bishop",
+        "controller": 1,
+        "location": "f1"
+      },
+      "7": {
+        "kind": "knight",
+        "controller": 1,
+        "location": "g1"
+      },
+      "8": {
+        "kind": "rook",
+        "controller": 1,
+        "location": "h1"
+      },
+      "9": {
+        "kind": "pawn",
+        "controller": 1,
+        "location": "a2"
+      },
+      "10": {
+        "kind": "pawn",
+        "controller": 1,
+        "location": "b2"
+      },
+      "11": {
+        "kind": "pawn",
+        "controller": 1,
+        "location": "c2"
+      },
+      "12": {
+        "kind": "pawn",
+        "controller": 1,
+        "location": "d2"
+      },
+      "13": {
+        "kind": "pawn",
+        "controller": 1,
+        "location": "e2"
+      },
+      "14": {
+        "kind": "pawn",
+        "controller": 1,
+        "location": "f2"
+      },
+      "15": {
+        "kind": "pawn",
+        "controller": 1,
+        "location": "g2"
+      },
+      "16": {
+        "kind": "pawn",
+        "controller": 1,
+        "location": "h2"
+      },
+      "17": {
+        "kind": "rook",
+        "controller": 2,
+        "location": "a8"
+      },
+      "18": {
+        "kind": "knight",
+        "controller": 2,
+        "location": "b8"
+      },
+      "19": {
+        "kind": "bishop",
+        "controller": 2,
+        "location": "c8"
+      },
+      "20": {
+        "kind": "queen",
+        "controller": 2,
+        "location": "d8"
+      },
+      "21": {
+        "kind": "king",
+        "controller": 2,
+        "location": "e8"
+      },
+      "22": {
+        "kind": "bishop",
+        "controller": 2,
+        "location": "f8"
+      },
+      "23": {
+        "kind": "knight",
+        "controller": 2,
+        "location": "g8"
+      },
+      "24": {
+        "kind": "rook",
+        "controller": 2,
+        "location": "h8"
+      },
+      "25": {
+        "kind": "pawn",
+        "controller": 2,
+        "location": "a7"
+      },
+      "26": {
+        "kind": "pawn",
+        "controller": 2,
+        "location": "b7"
+      },
+      "27": {
+        "kind": "pawn",
+        "controller": 2,
+        "location": "c7"
+      },
+      "28": {
+        "kind": "pawn",
+        "controller": 2,
+        "location": "d7"
+      },
+      "29": {
+        "kind": "pawn",
+        "controller": 2,
+        "location": "e7"
+      },
+      "30": {
+        "kind": "pawn",
+        "controller": 2,
+        "location": "f7"
+      },
+      "31": {
+        "kind": "pawn",
+        "controller": 2,
+        "location": "g7"
+      },
+      "32": {
+        "kind": "pawn",
+        "controller": 2,
+        "location": "h7"
+      }
+    }
+  },
+  "locations": [
+    {
+      "id": "board",
+      "name": "Chess Board",
+      "shape": {
+        "rows": 8,
+        "cols": 8,
+        "adjacency": "orthogonal"
+      }
+    }
+  ],
+  "entityTypes": [
+    {
+      "id": "pawn1",
+      "archetype": "pawn",
+      "area": "board"
+    },
+    {
+      "id": "rook1",
+      "archetype": "rook",
+      "area": "board"
+    },
+    {
+      "id": "knight1",
+      "archetype": "knight",
+      "area": "board"
+    },
+    {
+      "id": "bishop1",
+      "archetype": "bishop",
+      "area": "board"
+    },
+    {
+      "id": "queen1",
+      "archetype": "queen",
+      "area": "board"
+    },
+    {
+      "id": "king1",
+      "archetype": "king",
+      "area": "board"
+    }
+  ],
+  "phases": {
+    "initial": "setup",
+    "nodes": {
+      "setup": {
+        "id": "setup",
+        "enabledActions": [
+          "placePieces"
+        ],
+        "onEnter": [],
+        "onExit": [],
+        "transitions": [
+          {
+            "from": [
+              "setup"
+            ],
+            "to": "play",
+            "trigger": {
+              "expr": "allPiecesPlaced"
+            }
+          }
+        ]
+      },
+      "play": {
+        "id": "play",
+        "enabledActions": [
+          "movePiece"
+        ],
+        "onEnter": [],
+        "onExit": [],
+        "transitions": [
+          {
+            "from": [
+              "play"
+            ],
+            "to": "end",
+            "trigger": {
+              "expr": "checkmate"
+            }
+          }
+        ]
+      },
+      "end": {
+        "id": "end",
+        "enabledActions": [],
+        "onEnter": [],
+        "onExit": []
+      }
+    }
+  },
+  "actions": [
+    {
+      "id": "movePiece",
+      "actor": "activePlayer",
+      "decisions": [
+        {
+          "id": "selectPiece",
+          "kind": "choice",
+          "from": {
+            "type": "entities",
+            "where": {
+              "all": [
+                {
+                  "expr": "candidate.controller == currentPlayer"
+                },
+                {
+                  "expr": "candidate.canMove"
+                }
+              ]
+            }
+          },
+          "to": "selected"
+        },
+        {
+          "id": "selectDestination",
+          "kind": "choice",
+          "from": "locations"
+        }
+      ]
+    }
+  ],
+  "rules": {
+    "pawnMovement": {
+      "description": "Pawns can move forward one square, or two squares from their starting position.",
+      "constrains": {
+        "entity": {
+          "pawn": "movement"
+        }
+      }
+    },
+    "pawnCapture": {
+      "description": "Pawns can capture diagonally one square forward.",
+      "constrains": {
+        "entity": {
+          "pawn": "capture"
+        }
+      }
+    },
+    "rookMovement": {
+      "description": "Rooks can move any number of squares vertically or horizontally.",
+      "constrains": {
+        "entity": {
+          "rook": "movement"
+        }
+      },
+      "constraints": [
+        {
+          "expr": "isStraightLineMove"
+        },
+        {
+          "expr": "isPathUnblocked"
+        }
+      ]
+    },
+    "knightMovement": {
+      "description": "Knights move in an L-shape: two squares in one direction and one square perpendicular.",
+      "constrains": {
+        "entity": {
+          "knight": "movement"
+        }
+      },
+      "constraints": [
+        {
+          "expr": "isLShapeMove"
+        }
+      ]
+    },
+    "bishopMovement": {
+      "description": "Bishops can move any number of squares diagonally.",
+      "constrains": {
+        "entity": {
+          "bishop": "movement"
+        }
+      },
+      "constraints": [
+        {
+          "expr": "isDiagonalMove"
+        },
+        {
+          "expr": "isPathUnblocked"
+        }
+      ]
+    },
+    "queenMovement": {
+      "description": "The queen can move any number of squares vertically, horizontally, or diagonally.",
+      "constrains": {
+        "entity": {
+          "queen": "movement"
+        }
+      },
+      "constraints": [
+        {
+          "expr": "isStraightLineMove || isDiagonalMove"
+        },
+        {
+          "expr": "isPathUnblocked"
+        }
+      ]
+    },
+    "kingMovement": {
+      "description": "The king can move one square in any direction.",
+      "constrains": {
+        "entity": {
+          "king": "movement"
+        }
+      },
+      "constraints": [
+        {
+          "expr": "isOneSquareMove"
+        }
+      ]
+    },
+    "castling": {
+      "description": "The king and rook can perform castling under specific conditions.",
+      "constrains": {
+        "entity": {
+          "king": "castling"
+        }
+      },
+      "constraints": [
+        {
+          "expr": "isKingAndRookUnmoved"
+        },
+        {
+          "expr": "isPathUnblocked"
+        },
+        {
+          "expr": "isNotInCheck"
+        }
+      ]
+    },
+    "check": {
+      "description": "A king is in check if it is under attack by an opponent's piece.",
+      "when": {
+        "any": [
+          {
+            "expr": "isKingUnderAttack"
+          }
+        ]
+      },
+      "then": [
+        {
+          "expr": "notifyPlayerInCheck"
+        }
+      ]
+    },
+    "checkmate": {
+      "description": "A king is in checkmate if it is in check and has no legal moves to escape.",
+      "when": {
+        "all": [
+          {
+            "expr": "isKingUnderAttack"
+          },
+          {
+            "expr": "hasNoLegalMoves"
+          }
+        ]
+      },
+      "then": [
+        {
+          "expr": "endGameWithWinner"
+        }
+      ]
+    },
+    "stalemate": {
+      "description": "The game is a stalemate if the current player has no legal moves and is not in check.",
+      "when": {
+        "all": [
+          {
+            "expr": "isNotInCheck"
+          },
+          {
+            "expr": "hasNoLegalMoves"
+          }
+        ]
+      },
+      "then": {
+        "expr": "endGameWithDraw"
+      }
+    },
+    "insufficientMaterial": {
+      "description": "The game is a draw if neither player has sufficient material to checkmate.",
+      "when": {
+        "expr": "isInsufficientMaterial"
+      },
+      "then": {
+        "expr": "endGameWithDraw"
+      }
+    },
+    "threefoldRepetition": {
+      "description": "The game is a draw if the same position occurs three times.",
+      "when": {
+        "expr": "isThreefoldRepetition"
+      },
+      "then": {
+        "expr": "endGameWithDraw"
+      }
+    },
+    "fiftyMoveRule": {
+      "description": "The game is a draw if fifty moves are made without a pawn move or capture.",
+      "when": {
+        "expr": "isFiftyMovesWithoutProgress"
+      },
+      "then": {
+        "expr": "endGameWithDraw"
+      }
+    }
+  }
+}
