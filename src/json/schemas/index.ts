@@ -1,5 +1,4 @@
 import action from "./action.schema.json";
-import actionStep from "./actionStep.schema.json";
 import agent from "./agent.schema.json";
 import area from "./location.schema.json";
 import decision from "./decision.schema.json";
@@ -13,11 +12,11 @@ import phases from "./phases.schema.json";
 import rule from "./rule.schema.json";
 import transition from "./transition.schema.json";
 import trigger from "./trigger.schema.json";
+import select from "./select.schema.json";
 import Ajv2020 from "ajv/dist/2020";
 
 export function addSchemas(ajv: Ajv2020) {
     ajv.addSchema(action, "action.schema.json");
-    ajv.addSchema(actionStep, "actionStep.schema.json");
     ajv.addSchema(agent, "agent.schema.json");
     ajv.addSchema(area, "area.schema.json");
     ajv.addSchema(decision, "decision.schema.json");
@@ -29,9 +28,9 @@ export function addSchemas(ajv: Ajv2020) {
     ajv.addSchema(phaseNode, "phaseNode.schema.json");
     ajv.addSchema(phases, "phases.schema.json");
     ajv.addSchema(rule, "rule.schema.json");
+    ajv.addSchema(select, "select.schema.json");
     ajv.addSchema(transition, "transition.schema.json");
     ajv.addSchema(trigger, "trigger.schema.json");
-
 }
 
 export {

@@ -280,12 +280,9 @@
     {
       "id": "movePiece",
       "actor": "activePlayer",
-      "decisions": [
+      "parameters": [
         {
-          "id": "selectPiece",
-          "kind": "choice",
-          "from": {
-            "type": "entities",
+          "entity": {
             "where": {
               "all": [
                 {
@@ -296,15 +293,17 @@
                 }
               ]
             }
-          },
-          "to": "selected"
+          }
         },
         {
-          "id": "selectDestination",
-          "kind": "choice",
-          "from": "locations"
+          "location": {
+            "where": {
+              "expr": "isValidMove(parameter[0], parameter[1])"
+            }
+          }
         }
-      ]
+      ],
+      "effects": []
     }
   ],
   "rules": {

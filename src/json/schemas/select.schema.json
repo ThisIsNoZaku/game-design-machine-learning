@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/boardml/core/select.schema.json",
+  "title": "Select",
+  "type": "object",
+  "required": [
+  ],
+  "anyOf": [
+    {
+      "required": [
+        "entity"
+      ],
+      "properties": {
+        "entity": {
+          "type": "object",
+          "properties": {
+            "filters": {
+              "type": "array",
+              "items": {
+                "$ref": "https://example.com/boardml/common/expr.schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "required": [
+        "agent"
+      ],
+      "properties": {
+        "agent": {
+          "type": "object",
+          "properties": {
+            "filters": {
+              "type": "array",
+              "items": {
+                "$ref": "https://example.com/boardml/common/expr.schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "required": [
+        "location"
+      ],
+      "properties": {
+        "location": {
+          "type": "object",
+          "properties": {
+            "filters": {
+              "type": "array",
+              "items": {
+                "$ref": "https://example.com/boardml/common/expr.schema.json"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+  }
+}

@@ -1,3 +1,5 @@
+import { Model } from "./Action";
+
 class Metadata {
     id: string;
     name: string;
@@ -22,15 +24,19 @@ class Metadata {
  * It can then be given a state and an action, and return an array of changes to the game state that occurred as a result of the action.
  */
 export class Game {
-    private constructor(metadata: Metadata, parameters: Record<string, string | number | boolean>) {
-        this.metadata = metadata;
-        this.parameters = parameters;
-    }
+    actions:Array<Model.Action>;
     metadata: Metadata;
     parameters: Record<string, string | number | boolean>;
 
+    private constructor(metadata: Metadata, parameters: Record<string, string | number | boolean>, actions: Array<Model.Action>) {
+        this.metadata = metadata;
+        this.parameters = parameters;
+        this.actions = actions;
+    }
+
     getAllowedActions(state: any): any[] {
-        return [];
+        // Generate variations of all possible actions.
+        return this.actions;
     }
 
     performAction(state: any, action: any): any[] {
@@ -38,6 +44,6 @@ export class Game {
     }
 
     static GenerateFromDefinition(definition: any): [Game, GameState?] {
-        return [new Game(definition.metadata, definition.parameters)]
+        return [new Game(definition.metadata, definition.parameters, definition.actions)];
     }
 }

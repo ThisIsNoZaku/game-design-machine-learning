@@ -10,7 +10,8 @@
     "rootDir": "./src",
     "types": ["@types/jest"],
     "strictNullChecks": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "experimentalDecorators": true
   },
   "include": ["src", "test"],
   "exclude": ["node_modules", "dist"]

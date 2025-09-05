@@ -19,10 +19,10 @@
         "type": "string"
       }
     },
-    "steps": {
+    "parameters": {
       "type": "array",
       "items": {
-        "$ref": "https://example.com/boardml/core/actionStep.schema.json"
+        "$ref": "https://example.com/boardml/core/select.schema.json"
       },
       "description": "Sequence of steps to execute as part of this action"
     }
