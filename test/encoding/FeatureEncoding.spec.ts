@@ -155,6 +155,10 @@ describe("Feature encoder", () => {
             const spec: FeatureSpec = {
                 fields: [
                     {
+                        kind: "numeric",
+                        key: "id"
+                    },
+                    {
                         kind: "list",
                         key: "values",
                         contains: "numeric",
@@ -164,13 +168,47 @@ describe("Feature encoder", () => {
             }
 
             const model = [{
+                id: 1,
                 values: [42, 13, 541]
             }];
 
             const encoder = new FeatureEncoder(spec);
             encoder.fit(model);
 
-            expect(await encoder.transform(model).x.array()).toEqual([[42, 13, 541]]);
+            expect(await encoder.transform(model).x.array()).toEqual([[1, 42, 13, 541]]);
+        });
+        it("flattens boolean lists", async () => {
+            const spec: FeatureSpec = {
+                fields: [
+                    {
+                        kind: "categorical",
+                        key: "handed",
+                        vocab: ["left", "right", "neither", "both"]
+                    },
+                    {
+                        kind: "list",
+                        key: "values",
+                        contains: "boolean",
+                        length: 3
+                    }],
+                maxObjects: 2
+            }
+
+            const model = [{
+                handed: "right",
+                values: [true, false, true]
+            }, {
+                handed: "left",
+                values: [false, false, true]
+            }];
+
+            const encoder = new FeatureEncoder(spec);
+            encoder.fit(model);
+
+            expect(await encoder.transform(model).x.array()).toEqual([
+                [0, 1, 0, 0, 1, 0, 1],
+                [1, 0, 0, 0, 0, 0, 1]
+            ]);
         })
-    })
+    });
 });
