@@ -211,4 +211,13 @@ describe("Feature encoder", () => {
             ]);
         })
     });
+
+    it("throws when padding is required but maxObjects is not set", () => {
+        const spec: FeatureSpec = {
+            fields: [],
+            setEncoding: "pad"
+        }
+
+        expect(() => new FeatureEncoder(spec)).toThrow("maxObjects must be a positive integer when using 'pad' setEncoding");
+    })
 });
