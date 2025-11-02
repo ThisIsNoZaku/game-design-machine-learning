@@ -81,7 +81,7 @@ export interface DictListSpec extends BaseListSpec {
  */
 export interface DictSpec extends BaseFieldSpec {
     kind: "dict";
-    fields: FieldSpec[];
+    shape: FieldSpec[];
 }
 
 type ListSpec = PrimitiveListSpec | DictListSpec;
