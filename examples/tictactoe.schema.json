@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "id": "tictactoe",
+    "version": 1
+  },
+  "agents": {
+    "exactly": 2
+  },
+  "locations": [
+    {
+      "id": "board",
+      "shape": {
+        "rows": 3,
+        "cols": 3
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "mark",
+      "parameters": {
+        "location": {
+          "type" : "location",
+          "where": "value === 0"
+        }
+      }
+    }
+  ],
+  "phases": {
+    "main": {}
+  },
+  "rules": {}
+}
