@@ -1,6 +1,10 @@
-// Core types your app can extend
-export type SingularFieldKind = "numeric" | "boolean" | "categorical" | "text" | "multi_categorical";
-export type FieldKind = SingularFieldKind | "list";
+export type NumericKind = "numeric";
+export type BooleanKind = "boolean";
+export type DictKind = "dict";
+export type CategoricalKind = "categorical";
+export type MultiCategoricalKind = "multi_categorical";
+
+export type SingularFieldKind = NumericKind | BooleanKind | CategoricalKind | MultiCategoricalKind;
 
 export interface BaseFieldSpec {
     key: string;
@@ -50,20 +54,38 @@ export interface MultiCategoricalSpec extends BaseSingularFieldSpec {
 //     numHashBuckets?: number;    // for hashing
 //     hashing?: boolean;
 // }
-// Spec for a model property that is a list of items of a given type.
-// When encoded, the list is flattened.
-export interface ListSpec extends BaseFieldSpec {
+
+interface BaseListSpec extends BaseFieldSpec {
     kind: "list";
-    contains: FieldKind;
+    contains: NumericKind | BooleanKind | DictKind;
     length: number;
 }
 
+/**
+ * Spec for a model property that is a list of items of a given type.
+ *
+ * When encoded, the list is flattened.
+ */
+export interface PrimitiveListSpec extends BaseListSpec {
+    // TODO: Extend support to more types.
+    contains: NumericKind | BooleanKind;
+}
+
+export interface DictListSpec extends BaseListSpec {
+    contains: DictKind;
+    shape: FieldSpec[]
+}
+
+/**
+ * Spec for a model property that is a dictionary of known fields.
+ */
 export interface DictSpec extends BaseFieldSpec {
     kind: "dict";
     fields: FieldSpec[];
 }
 
-// export type FieldSpec = NumericSpec | BooleanSpec | CategoricalSpec | MultiCategoricalSpec | TextSpec | ListSpec;
+type ListSpec = PrimitiveListSpec | DictListSpec;
+
 export type FieldSpec = NumericSpec | BooleanSpec | CategoricalSpec | MultiCategoricalSpec | ListSpec | DictSpec;
 
 export interface FeatureSpec {
