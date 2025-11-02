@@ -3,8 +3,6 @@
   "$id": "https://example.com/boardml/core/select.schema.json",
   "title": "Select",
   "type": "object",
-  "required": [
-  ],
   "anyOf": [
     {
       "required": [
@@ -26,7 +24,7 @@
     },
     {
       "required": [
-        "agent"
+        "player"
       ],
       "properties": {
         "agent": {
@@ -60,7 +58,5 @@
         }
       }
     }
-  ],
-  "properties": {
-  }
+  ]
 }
