@@ -3,6 +3,7 @@ import {FeatureSpec} from "../../../src/specification/ModelSpecs";
 
 describe("Tictactoe state transformation", () => {
     const state = {
+        activePlayer: 0,
         board: [
             0, 0, 0,
             0, 0, 0,
@@ -11,6 +12,10 @@ describe("Tictactoe state transformation", () => {
     }
     const spec:FeatureSpec = {
         fields: [
+            {
+                "key": "activePlayer",
+                "kind" : "boolean"
+            },
             {
                 "key": "board",
                 "kind" : "list",
@@ -23,6 +28,6 @@ describe("Tictactoe state transformation", () => {
     }
     it("transforms the state of the board", () => {
         const encoder = new FeatureEncoder(spec);
-        expect(encoder.transformState(state).x.arraySync()).toEqual([[0, 0, 0, 0, 0, 0, 0, 0, 0]]);
+        expect(encoder.transformState(state).x.arraySync()).toEqual([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]);
     });
 });
