@@ -1,4 +1,4 @@
-import {JSONSchemaType, ValidateFunction} from "ajv";
+import {ValidateFunction} from "ajv";
 import Ajv2020 from "ajv/dist/2020";
 import {addSchemas, game} from "./schemas";
 import formatValidationErrors from "./formatSchemaErrors";
