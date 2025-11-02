@@ -8,7 +8,7 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "types": ["@types/jest"],
+    "types": ["@types/jest", "@types/node"],
     "strictNullChecks": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true
