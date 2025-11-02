@@ -5,34 +5,47 @@
  *
  * Regions can be nested within other regions to create a hierarchy of locations. For example, a "Board" region may contain multiple "Space" regions.
  */
-export default class Region {
+
+export interface Region {
     id: string;
-    name?: string;
-    owner?: string;
+    contains: string[];
     shape?: {
         rows: number;
         cols: number;
-        adjacency?: string;
     };
-    links?: string[];
-    constrains?: Expr[];
+}
+
+/**
+ * A region defined by a shape instead of listing out all contained locations.
+ *
+ * Used for situations where there are a regular arrangement of locations, like a chess board for example.
+ */
+export class ShapeRegion implements Region {
+    id: string;
+    shape: {
+        rows: number;
+        cols: number;
+    };
+    contains: string[];
+    subregions: Region[];
 
     constructor(
         id: string,
-        name?: string,
-        owner?: string,
-        shape?: { rows: number; cols: number; adjacency?: string },
-        links?: string[],
-        constrains?: Expr[]
+        shape: { rows: number; cols: number;}
     ) {
         this.id = id;
-        this.name = name;
-        this.owner = owner;
         this.shape = shape;
-        this.links = links;
-        this.constrains = constrains;
+        this.subregions = Array.from({length: shape!.cols}, (_, col) =>
+            Array.from({length: shape!.rows}, (_, row) => {
+                return {
+                    id: `${id}_${col}_${row}`,
+                    contains: []
+                }
+            })).flat();
+        this.contains = this.subregions.map(r => r.id);
     }
 }
+
 /**
  * An instance of a Region within the Game State.
  *
