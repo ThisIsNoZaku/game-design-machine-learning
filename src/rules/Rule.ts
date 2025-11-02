@@ -1,4 +1,5 @@
 import Selector from "../Selector";
+import { Agent } from "./Agent";
 
 /**
  * A rule that describes an instruction or constraint in the game.

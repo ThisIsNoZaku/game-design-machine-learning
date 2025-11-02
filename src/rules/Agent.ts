@@ -1,5 +1,5 @@
 /**
- * A decision maker that exists outside the rules of the game.
+ * A decision maker that exists outside the rules of the game. Equivalent to a player in many games.
  */
 export class Agent {
     id: string;
