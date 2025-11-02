@@ -20,8 +20,9 @@
       "id": "mark",
       "parameters": {
         "location": {
-          "type" : "location",
-          "where": "value === 0"
+          "location": {
+            "where": "value === 0"
+          }
         }
       }
     }
