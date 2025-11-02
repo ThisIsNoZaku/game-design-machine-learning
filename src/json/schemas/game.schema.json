@@ -5,10 +5,8 @@
   "type": "object",
   "required": [
     "metadata",
-    "parameters",
     "agents",
     "locations",
-    "entityTypes",
     "phases",
     "actions",
     "rules"
@@ -59,9 +57,8 @@
       "$ref": "https://example.com/boardml/rng/rng.schema.json"
     },
     "agents": {
-      "type": "object",
-      "properties": {
-        "count": {
+      "oneOf": [
+        {
           "type": "object",
           "properties": {
             "min": {
@@ -72,16 +69,20 @@
               "type": "integer",
               "minimum": 1
             }
-          }
+          },
+          "additionalProperties": false
         },
-        "definitions": {
+        {
           "type": "object",
-          "additionalProperties": {
-            "$ref": "https://example.com/boardml/core/agent.schema.json"
-          }
+          "properties": {
+            "exactly": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": false
         }
-      },
-      "additionalProperties": false
+      ]
     },
     "locations": {
       "type": "array",
