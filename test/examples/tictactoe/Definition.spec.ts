@@ -1,15 +1,16 @@
 import checkers from "../../../examples/tictactoe.schema.json";
 import {RuleDocumentValidator} from "../../../src/json/RuleDocumentValidator";
-import {Game} from "../../../src/model/Game";
+import {Game} from "../../../src/rules/Game";
 
 namespace Tictactoe {
     describe("Tictactoe Definition", () => {
-        it("loads and validates the chess definition", () => {
+        it("loads and validates the definition", () => {
             const output: any = new RuleDocumentValidator().validate(checkers);
             expect(output).toBeDefined();
             expect(output.metadata.id).toBe("tictactoe");
-            expect(output.agents.count.min).toBe(2);
-            expect(output.agents.count.max).toBe(2);
+            expect(output.agents).toEqual({
+                exactly: 2
+            });
             expect(output.locations).toEqual([{
                 id: "board",
                 "shape": {
@@ -17,6 +18,18 @@ namespace Tictactoe {
                     "rows" : 3
                 }
             }]);
+            expect(output.actions).toEqual([
+                {
+                    id: "mark",
+                    parameters: {
+                        location: {
+                            location: {
+                                where: "value === 0"
+                            }
+                        }
+                    }
+                }
+            ]);
             expect(output.rules).toBeDefined();
         });
     })
