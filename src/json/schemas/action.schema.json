@@ -20,8 +20,8 @@
       }
     },
     "parameters": {
-      "type": "array",
-      "items": {
+      "type": "object",
+      "additionalProperties": {
         "$ref": "https://example.com/boardml/core/select.schema.json"
       },
       "description": "Sequence of steps to execute as part of this action"
