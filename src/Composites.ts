@@ -1,4 +1,4 @@
-import {Expression} from "./model/Expression";
+import {Expression} from "./rules/Expression";
 
 export type Any ={
     "any": Array<Expression>
