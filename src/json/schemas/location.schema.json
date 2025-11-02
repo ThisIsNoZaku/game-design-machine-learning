@@ -3,12 +3,34 @@
   "$id": "https://example.com/boardml/core/location.schema.json",
   "title": "Area",
   "type": "object",
-  "required": ["id"],
   "properties": {
-    "id": {"type": "string"},
-    "name": {"type": "string"},
-    "owner": {"type": "string", "description": "Agent id (for hands, player boards)"},
-    "links": {"type": "array", "items": {"type": "string"}},
-    "constrains": {"type": "array", "items": {"$ref": "https://example.com/boardml/common/expr.schema.json"}}
-  }
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "shape": {
+      "type": "object",
+      "properties": {
+        "rows": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "cols": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "rows",
+        "cols"
+      ],
+      "additionalProperties": false
+    },
+    "state": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
 }

@@ -46,7 +46,7 @@ export class Game implements SpecProvider {
                         parameters: Record<string, string | number | boolean>,
                         actions: Array<Action>,
                         agents: Agents,
-                        locations: Array<Region>) {
+                        locations: { [id: string]: Region }) {
         if (!locations) {
             throw new Error("Empty locations array not allowed!");
         }
@@ -61,10 +61,11 @@ export class Game implements SpecProvider {
             id: "play_area",
             contains: []
         };
-        for (const location of Object.values(locations)) {
+        for (const id in locations) {
+            const location = locations[id];
             if (location.shape) {
-                const shapeRegion = new ShapeRegion(location.id, location.shape);
-                locationsMap[location.id] = shapeRegion;
+                const shapeRegion = new ShapeRegion(id, location.shape);
+                locationsMap[id] = shapeRegion;
                 for (const subregion of shapeRegion.subregions) {
                     locationsMap[subregion.id] = {
                         id: subregion.id,
@@ -72,12 +73,12 @@ export class Game implements SpecProvider {
                     }
                 }
             } else {
-                locationsMap[location.id] = {
-                    id: location.id,
+                locationsMap[id] = {
+                    id: id,
                     contains: location.contains
                 };
             }
-            playArea.contains.push(location.id);
+            playArea.contains.push(id);
         }
 
         this.locations = locationsMap;
