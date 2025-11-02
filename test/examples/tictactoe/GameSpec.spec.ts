@@ -32,6 +32,16 @@ describe("Tictactoe spec", () => {
                             key: "value",
                             kind: "numeric"
                         }],
+                },
+                {
+                    key: "actions",
+                    kind: "dict",
+                    shape: [
+                        {
+                            key: "id",
+                            kind: "numeric"
+                        }
+                    ]
                 }
             ]
         } as FeatureSpec);
