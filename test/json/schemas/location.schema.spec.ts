@@ -14,10 +14,34 @@ describe("location schema", () => {
         addSchemas(ajv);
         validator = ajv.compile(locationSchema);
     });
-    it("must have an id", () => {
+    it("allows a shape", () => {
         const valid = validator({
-
+            shape: {
+                rows: 5,
+                cols: 10
+            }
         });
         expect(valid, formatValidationErrors(validator.errors)).toBe(true);
-    })
+    });
+    it("allows a state", () => {
+        const valid = validator({
+            state: {
+                foo: 5,
+                bar: 10
+            }
+        });
+        expect(valid, formatValidationErrors(validator.errors)).toBe(true);
+    });
+    it("allows tags", () => {
+        const valid = validator({
+            tags: []
+        });
+        expect(valid, formatValidationErrors(validator.errors)).toBe(true);
+    });
+    it("rejects tags that are not an array", () => {
+        const valid = validator({
+            tags: {}
+        });
+        expect(valid, formatValidationErrors(validator.errors)).toBe(false);
+    });
 });
