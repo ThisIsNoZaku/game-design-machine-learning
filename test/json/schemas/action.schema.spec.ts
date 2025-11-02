@@ -2,11 +2,7 @@ import { ValidateFunction } from "ajv";
 import Ajv2020 from "ajv/dist/2020";
 import addFormats from "ajv-formats";
 import actionSchema from "../../../src/json/schemas/action.schema.json";
-import decisionSchema from "../../../src/json/schemas/decision.schema.json";
-import effectSchema from "../../../src/json/schemas/effect.schema.json";
-import expressionSchema from "../../../src/json/schemas/expression.schema.json";
 import {addSchemas} from "../../../src/json/schemas";
-import formatValidationErrors from "../../../src/json/formatSchemaErrors";
 import "jest-expect-message";
 
 describe("Action Schema", () => {
