@@ -8,6 +8,7 @@ import {Agent} from "./Agent";
  * An action consists of:
  * - zero or more preconditions that must be met for the action to be available.
  * - zero or more steps that are executed to resolve the action.
+ * - zero or more parameters that specify variables that modify the action.
  *
  * When all preconditions are met, canPerform() returns true.
  * The action is then begun by calling perform(), which will return a list of all steps that occur as part of the Action.
@@ -22,6 +23,10 @@ export class Action {
     steps: ActionResolutionTree;
     // Metadata about an action to guide Agent decisions
     tags?: Array<string>;
+    /**
+     *
+     */
+    parameters?: Record<string, string | number | boolean>;
 
     constructor(
         id: string,
@@ -29,7 +34,8 @@ export class Action {
         steps: ActionResolutionTree,
         label?: string,
         pre?: Any | All,
-        tags?: Array<string>
+        tags?: Array<string>,
+        parameters?: Record<string, string | number | boolean>
     ) {
         this.id = id;
         this.actor = actor;
@@ -37,6 +43,7 @@ export class Action {
         this.label = label;
         this.prerequisites = pre;
         this.tags = tags;
+        this.parameters = parameters;
     }
 
     canPerform(actor: Agent) {
