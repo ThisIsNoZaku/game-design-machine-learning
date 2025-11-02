@@ -1,6 +1,6 @@
 import action from "./action.schema.json";
 import agent from "./agent.schema.json";
-import area from "./location.schema.json";
+import location from "./location.schema.json";
 import decision from "./decision.schema.json";
 import die from "./die.schema.json";
 import effect from "./effect.schema.json";
@@ -18,13 +18,13 @@ import Ajv2020 from "ajv/dist/2020";
 export function addSchemas(ajv: Ajv2020) {
     ajv.addSchema(action, "action.schema.json");
     ajv.addSchema(agent, "agent.schema.json");
-    ajv.addSchema(area, "area.schema.json");
     ajv.addSchema(decision, "decision.schema.json");
     ajv.addSchema(die, "die.schema.json");
     ajv.addSchema(effect, "effect.schema.json");
     ajv.addSchema(entity, "entity.schema.json");
     ajv.addSchema(expression, "expr.schema.json");
     ajv.addSchema(game, "game.schema.json");
+    ajv.addSchema(location, "location.schema.json");
     ajv.addSchema(phaseNode, "phaseNode.schema.json");
     ajv.addSchema(phases, "phases.schema.json");
     ajv.addSchema(rule, "rule.schema.json");
@@ -36,13 +36,13 @@ export function addSchemas(ajv: Ajv2020) {
 export {
     action,
     agent,
-    area,
     decision,
     die,
     effect,
     entity,
     expression,
     game,
+    location,
     phaseNode,
     phases,
     rule,
