@@ -17,14 +17,11 @@ describe("JsonValidator with RuleSchema", () => {
             },
             "parameters": {
                 "maxPlayers": 4,
-                "difficulty": "medium",
-                "allowSpectators": true
+                "difficulty": "medium"
             },
             "agents": {
-                "count": {
-                    "min": 2,
-                    "max": 4
-                }
+                "min": 2,
+                "max": 4
             }
             ,
             "locations": [
@@ -87,10 +84,8 @@ describe("JsonValidator with RuleSchema", () => {
                 "allowSpectators": true
             },
             "agents": {
-                "count" : {
-                    "min": 2,
-                    "max": 4
-                }
+                "min": 2,
+                "max": 4
             },
             "locations": [
                 {
