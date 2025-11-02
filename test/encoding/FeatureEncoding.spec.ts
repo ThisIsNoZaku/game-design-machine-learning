@@ -1,3 +1,5 @@
+// TypeScript
+// test/encoding/FeatureEncoding.spec.ts
 import {FeatureEncoder} from "../../src/encoding/FeatureEncoder";
 import {FeatureSpec} from "../../src/specification/ModelSpecs";
 
@@ -21,7 +23,6 @@ describe("Feature encoder", () => {
         }];
 
         const encoder = new FeatureEncoder(spec);
-        encoder.fit(model);
 
         expect(await encoder.transform(model).x.array()).toEqual([[1], [2], [3]]);
     });
@@ -45,7 +46,6 @@ describe("Feature encoder", () => {
         }];
 
         const encoder = new FeatureEncoder(spec);
-        encoder.fit(model);
 
         expect(await encoder.transform(model).x.array()).toEqual([[0], [.5], [1]]);
     });
@@ -69,7 +69,6 @@ describe("Feature encoder", () => {
         }];
 
         const encoder = new FeatureEncoder(spec);
-        encoder.fit(model);
 
         expect(await encoder.transform(model).x.array()).toEqual([[-1.2247449159622192], [0], [1.2247449159622192]]);
     });
@@ -92,7 +91,6 @@ describe("Feature encoder", () => {
             flag: true
         }];
         const encoder = new FeatureEncoder(spec);
-        encoder.fit(model);
 
         expect(await encoder.transform(model).x.array()).toEqual([[1], [0], [1]]);
     });
@@ -119,7 +117,6 @@ describe("Feature encoder", () => {
         }];
 
         const encoder = new FeatureEncoder(spec);
-        encoder.fit(model);
 
         expect(await encoder.transform(model).x.array()).toEqual([[1,0,0], [0,1,0], [0,0,1], [0,1,0]]);
     });
@@ -146,7 +143,6 @@ describe("Feature encoder", () => {
         }];
 
         const encoder = new FeatureEncoder(spec);
-        encoder.fit(model);
 
         expect(await encoder.transform(model).x.array()).toEqual([[1,0,1], [0,1,0], [0,1,1], [0,0,0]]);
     });
@@ -173,7 +169,6 @@ describe("Feature encoder", () => {
             }];
 
             const encoder = new FeatureEncoder(spec);
-            encoder.fit(model);
 
             expect(await encoder.transform(model).x.array()).toEqual([[1, 42, 13, 541]]);
         });
@@ -203,7 +198,6 @@ describe("Feature encoder", () => {
             }];
 
             const encoder = new FeatureEncoder(spec);
-            encoder.fit(model);
 
             expect(await encoder.transform(model).x.array()).toEqual([
                 [0, 1, 0, 0, 1, 0, 1],

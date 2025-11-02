@@ -1,4 +1,5 @@
 // TypeScript
+// src/encoding/FeatureEncoder.ts
 import * as tf from "@tensorflow/tfjs";
 import {
     CategoricalSpec,
@@ -6,7 +7,7 @@ import {
     FieldSpec,
     MultiCategoricalSpec,
     NumericSpec,
-    ListSpec,
+    PrimitiveListSpec,
     DictSpec
 } from "../specification/ModelSpecs";
 
@@ -28,303 +29,111 @@ export class FeatureEncoder {
         if (spec.setEncoding == "pad" && (!spec.maxObjects || spec.maxObjects <= 0)) {
             throw new Error("maxObjects must be a positive integer when using 'pad' setEncoding.");
         }
-        // We'll complete dims later in fit()
-        this.spec = {...spec, fields: spec.fields.map(f => ({...f, __dim: 0})), __totalDim: 0};
-    }
 
-    /** Scan a dataset to learn vocabularies/statistics. */
-    fit(dataset: Record<string, any>[]) {
-        // Collectors
-        const catCounts: Record<string, Map<string, number>> = {};
-        const textCounts: Record<string, Map<string, number>> = {};
-        let numericStats: Record<string, { count: number, sum: number, sumsq: number, min: number, max: number }> = {};
-
-        const bump = (m: Map<string, number>, k: string) => m.set(k, (m.get(k) || 0) + 1);
-
-        for (const obj of dataset) {
-            for (const f of this.spec.fields) {
-                const v = obj?.[f.key];
-
-                // Helper to update numeric stats for a key
-                const updNumeric = (key: string, val: number | undefined) => {
-                    if (val == null) return;
-                    const s = numericStats[key] ?? {
-                        count: 0,
-                        sum: 0,
-                        sumsq: 0,
-                        min: +Infinity,
-                        max: -Infinity
-                    };
-                    s.count++;
-                    s.sum += val;
-                    s.sumsq += val * val;
-                    s.min = Math.min(s.min, val);
-                    s.max = Math.max(s.max, val);
-                    numericStats[key] = s;
-                };
-
-                // Handle nested dict fields
+        // Derive dims from the Spec object (no fit required).
+        const deriveFields = (fields: FieldSpec[]): FittedFieldSpec[] => {
+            return fields.map((f) => {
+                // Dict: compute dims from nested fields and propagate metadata if present
                 if ((f as any).kind === "dict") {
                     const df = f as DictSpec;
-                    const objVal = v ?? {};
-                    for (const sub of df.fields) {
-                        const subVal = objVal?.[sub.key];
-                        const subKey = `${f.key}.${sub.key}`;
-                        switch (sub.kind) {
-                            case "numeric":
-                                if (subVal != null) updNumeric(subKey, subVal);
-                                break;
-                            case "categorical":
-                                if ((sub as any).hashing) break;
-                                const cmap = catCounts[subKey] ?? new Map<string, number>();
-                                if (subVal != null) bump(cmap, String(subVal));
-                                catCounts[subKey] = cmap;
-                                break;
-                            case "multi_categorical":
-                                if ((sub as any).hashing) break;
-                                const mmap = catCounts[subKey] ?? new Map<string, number>();
-                                if (Array.isArray(subVal)) for (const t of subVal) bump(mmap, String(t));
-                                catCounts[subKey] = mmap;
-                                break;
-                            case "boolean":
-                                break;
+                    let subtotal = 0;
+                    const subFields: FittedFieldSpec[] = df.fields.map((sub) => {
+                        if (sub.kind === "numeric") {
+                            (sub as any).__dim = 1;
+                        } else if (sub.kind === "boolean") {
+                            (sub as any).__dim = 1;
+                        } else if (sub.kind === "categorical") {
+                            const cf = sub as CategoricalSpec;
+                            if ((cf as any).hashing) {
+                                (sub as any).__dim = 32;
+                            } else {
+                                (sub as any).__dim = (cf.vocab?.length ?? 0);
+                            }
+                        } else if (sub.kind === "multi_categorical") {
+                            const mf = sub as MultiCategoricalSpec;
+                            if ((mf as any).hashing) {
+                                (sub as any).__dim = 64;
+                            } else {
+                                (sub as any).__dim = (mf.vocab?.length ?? 0);
+                            }
+                        } else {
+                            (sub as any).__dim = 0;
                         }
-                    }
-                    continue;
+                        subtotal += (sub as any).__dim;
+                        return sub as any;
+                    });
+                    return {...df, fields: subFields, __dim: subtotal} as any;
                 }
 
-                // Handle fixed-length lists of singular kinds
-                if ((f as any).kind === "list") {
-                    const lf = f as ListSpec;
-                    const arr = Array.isArray(v) ? v : [];
-                    // Treat each position independently (positional features)
+                // List: fixed-length list of numeric/boolean values (flattened)
+                else if ((f as any).kind === "list") {
+                    const lf = f as PrimitiveListSpec;
+                    let subtotal = 0;
+                    // store per-position metadata on the list spec (for future extension)
+                    (lf as any).__perPosDim = [];
                     for (let i = 0; i < lf.length; i++) {
-                        const elem = arr[i];
-                        const posKey = `${f.key}#${i}`;
                         const cont = lf.contains;
-                        switch (cont) {
-                            case "numeric":
-                                if (elem != null) updNumeric(posKey, elem);
-                                break;
-                            // case "categorical":
-                            //     // no hashing info in ListSpec, assume vocab-building
-                            //     const cmap = catCounts[posKey] ?? new Map<string, number>();
-                            //     if (elem != null) bump(cmap, String(elem));
-                            //     catCounts[posKey] = cmap;
-                            //     break;
-                            // case "multi_categorical":
-                            //     const mmap = catCounts[posKey] ?? new Map<string, number>();
-                            //     if (Array.isArray(elem)) for (const t of elem) bump(mmap, String(t));
-                            //     catCounts[posKey] = mmap;
-                            //     break;
-                            case "boolean":
-                                break;
-                            default:
-                                // unsupported nested "list" or others: skip
-                                break;
+                        if (cont === "numeric" || cont === "boolean") {
+                            (lf as any).__perPosDim[i] = 1;
+                            subtotal += 1;
+                        } else {
+                            (lf as any).__perPosDim[i] = 0;
                         }
                     }
-                    continue;
+                    (lf as any).__perPosDim = (lf as any).__perPosDim ?? [];
+                    return {...lf, __dim: subtotal} as any;
                 }
 
-                // Existing singular handling
-                switch (f.kind) {
-                    case "numeric": {
-                        if (v == null) break;
-                        const s = numericStats[f.key] ?? {
-                            count: 0,
-                            sum: 0,
-                            sumsq: 0,
-                            min: +Infinity,
-                            max: -Infinity
-                        };
-                        s.count++;
-                        s.sum += v;
-                        s.sumsq += v * v;
-                        s.min = Math.min(s.min, v);
-                        s.max = Math.max(s.max, v);
-                        numericStats[f.key] = s;
-                        break;
-                    }
-                    case "categorical": {
-                        if ((f as any).hashing) break;
-                        const map = catCounts[f.key] ?? new Map<string, number>();
-                        if (v != null) bump(map, String(v));
-                        catCounts[f.key] = map;
-                        break;
-                    }
-                    case "multi_categorical": {
-                        if ((f as any).hashing) break;
-                        const map = catCounts[f.key] ?? new Map<string, number>();
-                        if (Array.isArray(v)) for (const t of v) bump(map, String(t));
-                        catCounts[f.key] = map;
-                        break;
-                    }
-                    case "boolean":
-                        break;
-                }
-            }
-        }
-
-        // Finalize stats/vocabs and compute dims
-        let total = 0;
-        this.spec.fields = this.spec.fields.map((f) => {
-            // Dict: compute dims from nested fields and propagate metadata
-            if ((f as any).kind === "dict") {
-                const df = f as DictSpec;
-                let subtotal = 0;
-                df.fields = df.fields.map((sub) => {
-                    if (sub.kind === "numeric") {
-                        const s = numericStats[`${f.key}.${sub.key}`];
-                        if ((sub as NumericSpec).normalize === "standard" && s?.count) {
-                            (sub as NumericSpec).mean = s.sum / s.count;
-                            const var_ = Math.max(1e-12, s.sumsq / s.count - (sub as NumericSpec).mean! ** 2);
-                            (sub as NumericSpec).std = Math.sqrt(var_);
-                        } else if ((sub as NumericSpec).normalize === "minmax" && s) {
-                            (sub as NumericSpec).min = s.min;
-                            (sub as NumericSpec).max = s.max;
-                        }
-                        (sub as any).__dim = 1;
-                    } else if (sub.kind === "boolean") {
-                        (sub as any).__dim = 1;
-                    } else if (sub.kind === "categorical") {
-                        const cf = sub as CategoricalSpec;
-                        if (!cf.hashing) {
-                            const counts = catCounts[`${f.key}.${sub.key}`] ?? new Map<string, number>();
-                            let vocab = cf.vocab ?? [...counts.entries()]
-                                .sort((a, b) => b[1] - a[1])
-                                .map(([w]) => w);
-                            if (cf.maxVocab) vocab = vocab.slice(0, cf.maxVocab);
-                            cf.vocab = vocab;
-                            (sub as any).__dim = (cf.vocab?.length ?? 0);
-                        } else {
-                            (sub as any).__dim = 32;
-                        }
-                    } else if (sub.kind === "multi_categorical") {
-                        const mf = sub as MultiCategoricalSpec;
-                        if (!mf.hashing) {
-                            const counts = catCounts[`${f.key}.${sub.key}`] ?? new Map<string, number>();
-                            let vocab = mf.vocab ?? [...counts.entries()]
-                                .sort((a, b) => b[1] - a[1])
-                                .map(([w]) => w);
-                            if (mf.maxVocab) vocab = vocab.slice(0, mf.maxVocab);
-                            mf.vocab = vocab;
-                            (sub as any).__dim = (mf.vocab?.length ?? 0);
-                        } else {
-                            (sub as any).__dim = 64;
-                        }
-                    }
-                    subtotal += (sub as any).__dim;
-                    return sub as any;
-                });
-                (f as any).__dim = subtotal;
-            }
-            // List: fixed-length list of singular kinds
-            else if ((f as any).kind === "list") {
-                const lf = f as ListSpec;
-                let subtotal = 0;
-                // store per-position metadata (vocabs/dims) on the list spec
-                (lf as any).__perPosVocab = [];
-                (lf as any).__perPosDim = [];
-                for (let i = 0; i < lf.length; i++) {
-                    const posKey = `${f.key}#${i}`;
-                    const cont = lf.contains;
-                    if (cont === "numeric") {
-                        (lf as any).__perPosDim[i] = 1;
-                        subtotal += 1;
-                    } else if (cont === "boolean") {
-                        (lf as any).__perPosDim[i] = 1;
-                        subtotal += 1;
-                    } else if (cont === "categorical") {
-                        const counts = catCounts[posKey] ?? new Map<string, number>();
-                        let vocab = [...counts.entries()]
-                            .sort((a, b) => b[1] - a[1])
-                            .map(([w]) => w);
-                        // no maxVocab on ListSpec; store full vocab
-                        (lf as any).__perPosVocab[i] = vocab;
-                        (lf as any).__perPosDim[i] = vocab.length;
-                        subtotal += vocab.length;
-                    } else if (cont === "multi_categorical") {
-                        const counts = catCounts[posKey] ?? new Map<string, number>();
-                        let vocab = [...counts.entries()]
-                            .sort((a, b) => b[1] - a[1])
-                            .map(([w]) => w);
-                        (lf as any).__perPosVocab[i] = vocab;
-                        (lf as any).__perPosDim[i] = vocab.length;
-                        subtotal += vocab.length;
+                // Singular types
+                else {
+                    if (f.kind === "numeric") {
+                        (f as any).__dim = 1;
+                    } else if (f.kind === "boolean") {
+                        (f as any).__dim = 1;
+                    } else if (f.kind === "categorical") {
+                        const cf = f as CategoricalSpec;
+                        if ((cf as any).hashing) (f as any).__dim = 32;
+                        else (f as any).__dim = (cf.vocab?.length ?? 0);
+                    } else if (f.kind === "multi_categorical") {
+                        const mf = f as MultiCategoricalSpec;
+                        if ((mf as any).hashing) (f as any).__dim = 64;
+                        else (f as any).__dim = (mf.vocab?.length ?? 0);
                     } else {
-                        // unsupported nested list/list-of-list; treat as zero-dim
-                        (lf as any).__perPosDim[i] = 0;
+                        (f as any).__dim = 0;
                     }
+                    return f as any;
                 }
-                (f as any).__dim = subtotal;
-            }
-            // Singular types (existing logic)
-            else if (f.kind === "numeric") {
-                const s = numericStats[f.key];
-                if ((f as NumericSpec).normalize === "standard" && s?.count) {
-                    (f as NumericSpec).mean = s.sum / s.count;
-                    const var_ = Math.max(1e-12, s.sumsq / s.count - (f as NumericSpec).mean! ** 2);
-                    (f as NumericSpec).std = Math.sqrt(var_);
-                } else if ((f as NumericSpec).normalize === "minmax" && s) {
-                    (f as NumericSpec).min = s.min;
-                    (f as NumericSpec).max = s.max;
-                }
-                (f as any).__dim = 1;
-            } else if (f.kind === "boolean") {
-                (f as any).__dim = 1;
-            } else if (f.kind === "categorical") {
-                const cf = f as CategoricalSpec;
-                if (!cf.hashing) {
-                    const counts = catCounts[f.key] ?? new Map<string, number>();
-                    let vocab = cf.vocab ?? [...counts.entries()]
-                        .sort((a, b) => b[1] - a[1])
-                        .map(([w]) => w);
-                    if (cf.maxVocab) vocab = vocab.slice(0, cf.maxVocab);
-                    cf.vocab = vocab;
-                    // one-hot size = vocab
-                    (f as any).__dim = (cf.vocab?.length ?? 0);
-                } else {
-                    (f as any).__dim = 32; // hashing buckets
-                }
-            } else if (f.kind === "multi_categorical") {
-                const mf = f as MultiCategoricalSpec;
-                if (!mf.hashing) {
-                    const counts = catCounts[f.key] ?? new Map<string, number>();
-                    let vocab = mf.vocab ?? [...counts.entries()]
-                        .sort((a, b) => b[1] - a[1])
-                        .map(([w]) => w);
-                    if (mf.maxVocab) vocab = vocab.slice(0, mf.maxVocab);
-                    mf.vocab = vocab;
-                    (f as any).__dim = (mf.vocab?.length ?? 0);
-                } else {
-                    (f as any).__dim = 64;
-                }
-            }
-            total += (f as any).__dim;
-            return f as any;
-        });
+            });
+        };
 
-        (this.spec as any).__totalDim = total;
+        const fields = deriveFields(spec.fields);
+        const total = fields.reduce((acc, f) => acc + ((f as any).__dim || 0), 0);
+        this.spec = {...spec, fields, __totalDim: total} as FittedModelSpec;
     }
 
     /** Encode a single object to a flat feature vector (1D JS array). */
-    private encodeOne(obj: Record<string, any>): number[] {
+    private encodeOne(obj: Record<string, any>, numericStats: Record<string, {mean?: number; std?: number; min?: number; max?: number; count: number}>): number[] {
         const out: number[] = [];
         for (const f of this.spec.fields) {
             const v = obj?.[f.key];
+
             // Dict: flatten nested fields
             if ((f as any).kind === "dict") {
                 const df = f as FittedDictSpec;
                 const objVal = v ?? {};
                 for (const sub of df.fields) {
                     const subVal = objVal?.[sub.key];
+                    const statKey = `${f.key}.${sub.key}`;
+                    const s = numericStats[statKey];
                     switch (sub.kind) {
                         case "numeric": {
                             let x = (typeof subVal === "number") ? subVal : ((sub as NumericSpec).impute ?? 0);
                             const nf = sub as NumericSpec;
-                            if (nf.normalize === "standard" && nf.std && nf.std > 0) x = (x - (nf.mean ?? 0)) / nf.std;
-                            else if (nf.normalize === "minmax" && nf.max! > nf.min!) x = (x - (nf.min ?? 0)) / Math.max(1e-9, (nf.max! - nf.min!));
+                            if (nf.normalize === "standard" && s?.count && s.std && s.std > 0) {
+                                x = (x - (s.mean ?? 0)) / s.std;
+                            } else if (nf.normalize === "minmax" && s && typeof s.max === "number" && typeof s.min === "number" && (s.max! > s.min!)) {
+                                x = (x - (s.min ?? 0)) / Math.max(1e-9, (s.max! - s.min!));
+                            }
                             out.push(x);
                             break;
                         }
@@ -333,14 +142,17 @@ export class FeatureEncoder {
                             break;
                         case "categorical": {
                             const cf = sub as FittedCategoricalSpec;
-                            const slice = new Array<number>(sub.__dim).fill(0);
-                            if (cf.hashing) {
-                                const idx = mod(hashStr(String(subVal ?? "")), sub.__dim);
-                                slice[idx] = 1;
-                            } else {
-                                const idx = cf.vocab?.indexOf(String(subVal ?? ""));
-                                if (idx != null && idx >= 0) slice[idx] = 1;
-                                else slice[(cf.vocab?.length ?? 0)] = 1; // OOV
+                            const dim = sub.__dim ?? 0;
+                            const slice = new Array<number>(dim).fill(0);
+                            if (dim > 0) {
+                                if ((cf as any).hashing) {
+                                    const idx = mod(hashStr(String(subVal ?? "")), dim);
+                                    slice[idx] = 1;
+                                } else {
+                                    const idx = cf.vocab?.indexOf(String(subVal ?? ""));
+                                    if (idx != null && idx >= 0 && idx < dim) slice[idx] = 1;
+                                    else if ((cf.vocab?.length ?? 0) < dim) slice[(cf.vocab?.length ?? 0)] = 1; // OOV if space available
+                                }
                             }
                             out.push(...slice);
                             break;
@@ -348,14 +160,17 @@ export class FeatureEncoder {
                         case "multi_categorical": {
                             const mf = sub as MultiCategoricalSpec;
                             const vals = Array.isArray(subVal) ? subVal.map(String) : [];
-                            const slice = new Array<number>(sub.__dim).fill(0);
-                            if (mf.hashing) {
-                                for (const t of vals) slice[mod(hashStr(t), sub.__dim)] = 1;
-                            } else {
-                                for (const t of vals) {
-                                    const idx = mf.vocab?.indexOf(t);
-                                    if (idx != null && idx >= 0) slice[idx] = 1;
-                                    else slice[(mf.vocab?.length ?? 0)] = 1; // OOV
+                            const dim = sub.__dim ?? 0;
+                            const slice = new Array<number>(dim).fill(0);
+                            if (dim > 0) {
+                                if ((mf as any).hashing) {
+                                    for (const t of vals) slice[mod(hashStr(t), dim)] = 1;
+                                } else {
+                                    for (const t of vals) {
+                                        const idx = mf.vocab?.indexOf(t);
+                                        if (idx != null && idx >= 0 && idx < dim) slice[idx] = 1;
+                                        else if ((mf.vocab?.length ?? 0) < dim) slice[(mf.vocab?.length ?? 0)] = 1; // OOV if space available
+                                    }
                                 }
                             }
                             out.push(...slice);
@@ -368,35 +183,25 @@ export class FeatureEncoder {
 
             // List: fixed-length list of contained singular kinds, flattened by position
             if ((f as any).kind === "list") {
-                const lf = f as ListSpec;
+                const lf = f as PrimitiveListSpec;
                 const arr = Array.isArray(v) ? v : [];
                 for (let i = 0; i < lf.length; i++) {
                     const elem = arr[i];
                     const cont = lf.contains;
+                    const statKey = `${f.key}#${i}`;
+                    const s = numericStats[statKey];
                     if (cont === "numeric") {
                         let x = (typeof elem === "number") ? elem : 0;
+                        // Lists in ModelSpecs do not carry normalization config; but if someone put normalize on a separate per-pos config, this code can be extended.
+                        if (s && s.count && s.std && s.std > 0 && false) {
+                            // @ts-ignore
+                            x = (x - (s.mean ?? 0)) / s.std;
+                        } else if (s && typeof s.max === "number" && typeof s.min === "number" && false) {
+                            x = (x - (s.min ?? 0)) / Math.max(1e-9, (s.max! - s.min!));
+                        }
                         out.push(x);
                     } else if (cont === "boolean") {
                         out.push(elem ? 1 : 0);
-                    } else if (cont === "categorical") {
-                        const vocab = (lf as any).__perPosVocab?.[i] ?? [];
-                        const dim = (lf as any).__perPosDim?.[i] ?? vocab.length;
-                        const slice = new Array<number>(dim).fill(0);
-                        const idx = vocab.indexOf(String(elem ?? ""));
-                        if (idx >= 0) slice[idx] = 1;
-                        else slice[vocab.length] = 1; // OOV
-                        out.push(...slice);
-                    } else if (cont === "multi_categorical") {
-                        const vocab = (lf as any).__perPosVocab?.[i] ?? [];
-                        const dim = (lf as any).__perPosDim?.[i] ?? vocab.length;
-                        const slice = new Array<number>(dim).fill(0);
-                        const vals = Array.isArray(elem) ? elem.map(String) : [];
-                        for (const t of vals) {
-                            const idx = vocab.indexOf(t);
-                            if (idx >= 0) slice[idx] = 1;
-                            else slice[vocab.length] = 1; // OOV
-                        }
-                        out.push(...slice);
                     } else {
                         // unsupported types -> skip (no dims)
                     }
@@ -407,10 +212,12 @@ export class FeatureEncoder {
             // Existing singular encoding
             switch (f.kind) {
                 case "numeric": {
+                    const statKey = f.key;
+                    const s = numericStats[statKey];
                     let x = (typeof v === "number") ? v : ((f as NumericSpec).impute ?? 0);
                     const nf = f as NumericSpec;
-                    if (nf.normalize === "standard" && nf.std && nf.std > 0) x = (x - (nf.mean ?? 0)) / nf.std;
-                    else if (nf.normalize === "minmax" && nf.max! > nf.min!) x = (x - (nf.min ?? 0)) / Math.max(1e-9, (nf.max! - nf.min!));
+                    if (nf.normalize === "standard" && s?.count && s.std && s.std > 0) x = (x - (s.mean ?? 0)) / s.std;
+                    else if (nf.normalize === "minmax" && s && typeof s.max === "number" && typeof s.min === "number" && (s.max! > s.min!)) x = (x - (s.min ?? 0)) / Math.max(1e-9, (s.max! - s.min!));
                     out.push(x);
                     break;
                 }
@@ -419,14 +226,17 @@ export class FeatureEncoder {
                     break;
                 case "categorical": {
                     const cf = f as CategoricalSpec;
-                    const slice = new Array<number>(f.__dim).fill(0);
-                    if (cf.hashing) {
-                        const idx = mod(hashStr(String(v ?? "")), f.__dim);
-                        slice[idx] = 1;
-                    } else {
-                        const idx = cf.vocab?.indexOf(String(v ?? ""));
-                        if (idx != null && idx >= 0) slice[idx] = 1;
-                        else slice[(cf.vocab?.length ?? 0)] = 1; // OOV
+                    const dim = (f as any).__dim ?? 0;
+                    const slice = new Array<number>(dim).fill(0);
+                    if (dim > 0) {
+                        if ((cf as any).hashing) {
+                            const idx = mod(hashStr(String(v ?? "")), dim);
+                            slice[idx] = 1;
+                        } else {
+                            const idx = cf.vocab?.indexOf(String(v ?? ""));
+                            if (idx != null && idx >= 0 && idx < dim) slice[idx] = 1;
+                            else if ((cf.vocab?.length ?? 0) < dim) slice[(cf.vocab?.length ?? 0)] = 1; // OOV
+                        }
                     }
                     out.push(...slice);
                     break;
@@ -434,14 +244,17 @@ export class FeatureEncoder {
                 case "multi_categorical": {
                     const mf = f as MultiCategoricalSpec;
                     const vals = Array.isArray(v) ? v.map(String) : [];
-                    const slice = new Array<number>(f.__dim).fill(0);
-                    if (mf.hashing) {
-                        for (const t of vals) slice[mod(hashStr(t), f.__dim)] = 1;
-                    } else {
-                        for (const t of vals) {
-                            const idx = mf.vocab?.indexOf(t);
-                            if (idx != null && idx >= 0) slice[idx] = 1;
-                            else slice[(mf.vocab?.length ?? 0)] = 1; // OOV
+                    const dim = (f as any).__dim ?? 0;
+                    const slice = new Array<number>(dim).fill(0);
+                    if (dim > 0) {
+                        if ((mf as any).hashing) {
+                            for (const t of vals) slice[mod(hashStr(t), dim)] = 1;
+                        } else {
+                            for (const t of vals) {
+                                const idx = mf.vocab?.indexOf(t);
+                                if (idx != null && idx >= 0) slice[idx] = 1;
+                                else slice[(mf.vocab?.length ?? 0)] = 1; // OOV
+                            }
                         }
                     }
                     out.push(...slice);
@@ -466,13 +279,73 @@ export class FeatureEncoder {
         mask?: tf.Tensor;        // [K] (1=valid, 0=pad) if pad
         meta: { perItemDim: number; count: number }
     } {
+        // Compute numeric stats from the provided set (per-call)
+        const numericAccs: Record<string, {count: number; sum: number; sumsq: number; min: number; max: number}> = {};
+
+        const bumpNumeric = (key: string, val: number | undefined) => {
+            if (typeof val !== "number") return;
+            const s = numericAccs[key] ?? {count: 0, sum: 0, sumsq: 0, min: +Infinity, max: -Infinity};
+            s.count++;
+            s.sum += val;
+            s.sumsq += val * val;
+            s.min = Math.min(s.min, val);
+            s.max = Math.max(s.max, val);
+            numericAccs[key] = s;
+        };
+
+        for (const obj of set) {
+            for (const f of this.spec.fields) {
+                const v = obj?.[f.key];
+
+                // dict numeric subs
+                if ((f as any).kind === "dict") {
+                    const df = f as DictSpec;
+                    const objVal = v ?? {};
+                    for (const sub of df.fields) {
+                        if (sub.kind === "numeric") {
+                            const subVal = objVal?.[sub.key];
+                            bumpNumeric(`${f.key}.${sub.key}`, subVal);
+                        }
+                    }
+                    continue;
+                }
+
+                // list numeric positions
+                if ((f as any).kind === "list") {
+                    const lf = f as PrimitiveListSpec;
+                    const arr = Array.isArray(v) ? v : [];
+                    for (let i = 0; i < lf.length; i++) {
+                        if (lf.contains === "numeric") {
+                            const elem = arr[i];
+                            bumpNumeric(`${f.key}#${i}`, elem);
+                        }
+                    }
+                    continue;
+                }
+
+                // singular numeric
+                if (f.kind === "numeric") {
+                    if (typeof v === "number") bumpNumeric(f.key, v);
+                }
+            }
+        }
+
+        // finalize numeric stats (mean/std/min/max)
+        const numericStats: Record<string, {mean?: number; std?: number; min?: number; max?: number; count: number}> = {};
+        for (const [k, acc] of Object.entries(numericAccs)) {
+            const mean = acc.sum / acc.count;
+            const var_ = Math.max(1e-12, acc.sumsq / acc.count - mean * mean);
+            const std = Math.sqrt(var_);
+            numericStats[k] = {mean, std, min: acc.min, max: acc.max, count: acc.count};
+        }
+
         const D = (this.spec as any).__totalDim as number;
 
-        const encodeMatrix = (items: Record<string, any>[]) => items.map(o => this.encodeOne(o));
+        const encodeMatrix = (items: Record<string, any>[]) => items.map(o => this.encodeOne(o, numericStats));
 
         if (this.spec.setEncoding === "pad" || !this.spec.setEncoding) {
             const K = this.spec.maxObjects!;
-            if(K === undefined) throw new Error("maxObjects must be defined for 'pad' setEncoding.");
+            if (K === undefined) throw new Error("maxObjects must be defined for 'pad' setEncoding.");
             const items = set.slice(0, K);
             const mat = encodeMatrix(items);
             // pad rows
@@ -486,8 +359,7 @@ export class FeatureEncoder {
         // Permutation-invariant pooling
         const mat = encodeMatrix(set);
         if (mat.length === 0) {
-            const zero = tf.zeros([(this.spec.setEncoding ? D : this.spec.maxObjects!), D]);
-            const pooled = (this.spec.setEncoding ? tf.zeros([D]) : zero) as tf.Tensor;
+            const pooled = tf.zeros([D]) as tf.Tensor;
             return {x: pooled, meta: {perItemDim: D, count: 0}};
         }
         const x2d = tf.tensor2d(mat, [mat.length, D]);
