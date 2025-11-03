@@ -10,13 +10,13 @@
     "board": {
       "shape": {
         "rows": 3,
-        "cols": 3
-      },
-      "state": {
-        "value": {
-          "type": "integer",
-          "min": 0,
-          "max": 2
+        "cols": 3,
+        "state": {
+          "value": {
+            "type": "integer",
+            "min": 0,
+            "max": 2
+          }
         }
       }
     }
