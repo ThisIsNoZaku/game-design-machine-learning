@@ -15,13 +15,13 @@ namespace Tictactoe {
                 "board": {
                     "shape": {
                         "cols": 3,
-                        "rows": 3
-                    },
-                    "state": {
-                        "value": {
-                            "type": "integer",
-                            "min": 0,
-                            "max": 2
+                        "rows": 3,
+                        "state": {
+                            "value": {
+                                "type": "integer",
+                                "min": 0,
+                                "max": 2
+                            }
                         }
                     }
                 }
