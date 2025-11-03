@@ -20,6 +20,9 @@
         "cols": {
           "type": "integer",
           "minimum": 1
+        },
+        "state": {
+          "type": "object"
         }
       },
       "required": [
