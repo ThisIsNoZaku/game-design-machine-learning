@@ -1,0 +1,11 @@
+{
+  "requireObjectRoot": true,
+  "requireDraft2020Schema": true,
+  "requireSchemaIdMatchesFileName": true,
+  "requireUniqueSchemaIds": true,
+  "requireTopLevelType": true,
+  "validateRequiredProperties": true,
+  "requirePropertyDescriptions": true,
+  "validateLocalRefs": true,
+  "requireSchemaPathMatchesId": true
+}
