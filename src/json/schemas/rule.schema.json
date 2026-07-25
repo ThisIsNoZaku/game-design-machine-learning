@@ -1,13 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/boardml/core/rule.schema.json",
+  "$id": "src/json/schemas/rule.schema.json",
   "title": "Rule",
   "type": "object",
   "oneOf": [
     {
       "properties": {
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "TODO: Manual review - define description."
         },
         "constrains": {
           "type": "object",
@@ -23,7 +24,8 @@
                   "maxProperties": 1,
                   "additionalProperties": {
                     "type": "string"
-                  }
+                  },
+                  "description": "TODO: Manual review - define entity."
                 }
               },
               "additionalProperties": false
@@ -39,7 +41,8 @@
                   "maxProperties": 1,
                   "additionalProperties": {
                     "type": "string"
-                  }
+                  },
+                  "description": "TODO: Manual review - define agent."
                 }
               },
               "additionalProperties": false
@@ -55,18 +58,21 @@
                   "maxProperties": 1,
                   "additionalProperties": {
                     "type": "string"
-                  }
+                  },
+                  "description": "TODO: Manual review - define location."
                 }
               },
               "additionalProperties": false
             }
-          ]
+          ],
+          "description": "TODO: Manual review - define constrains."
         },
         "constraints": {
           "type": "array",
           "items": {
-            "$ref": "https://example.com/boardml/common/expr.schema.json"
-          }
+            "$ref": "./expression.schema.json"
+          },
+          "description": "TODO: Manual review - define constraints."
         }
       },
       "additionalProperties": false
@@ -74,7 +80,8 @@
     {
       "properties": {
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "TODO: Manual review - define description."
         },
         "when": {
           "oneOf": [
@@ -88,8 +95,9 @@
                   "type": "array",
                   "minItems": 1,
                   "items": {
-                    "$ref": "https://example.com/boardml/common/expr.schema.json"
-                  }
+                    "$ref": "./expression.schema.json"
+                  },
+                  "description": "TODO: Manual review - define all."
                 }
               }
             },
@@ -103,15 +111,17 @@
                   "type": "array",
                   "minItems": 1,
                   "items": {
-                    "$ref": "https://example.com/boardml/common/expr.schema.json"
-                  }
+                    "$ref": "./expression.schema.json"
+                  },
+                  "description": "TODO: Manual review - define any."
                 }
               }
             },
             {
-              "$ref": "https://example.com/boardml/common/expr.schema.json"
+              "$ref": "./expression.schema.json"
             }
-          ]
+          ],
+          "description": "TODO: Manual review - define when."
         },
         "then": {
           "oneOf": [
@@ -119,13 +129,14 @@
               "type": "array",
               "minItems": 1,
               "items": {
-                "$ref": "https://example.com/boardml/common/expr.schema.json"
+                "$ref": "./expression.schema.json"
               }
             },
             {
-              "$ref": "https://example.com/boardml/common/expr.schema.json"
+              "$ref": "./expression.schema.json"
             }
-          ]
+          ],
+          "description": "TODO: Manual review - define then."
         }
       },
       "required": [

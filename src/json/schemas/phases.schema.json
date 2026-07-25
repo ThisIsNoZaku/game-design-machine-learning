@@ -1,16 +1,23 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/boardml/core/phases.schema.json",
+  "$id": "src/json/schemas/phases.schema.json",
   "title": "Phases",
   "type": "object",
-  "required": ["initial", "nodes"],
+  "required": [
+    "initial",
+    "nodes"
+  ],
   "properties": {
-    "initial": {"type": "string"},
+    "initial": {
+      "type": "string",
+      "description": "TODO: Manual review - define initial."
+    },
     "nodes": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "https://example.com/boardml/core/phaseNode.schema.json"
-      }
+        "$ref": "./phaseNode.schema.json"
+      },
+      "description": "TODO: Manual review - define nodes."
     }
   }
 }

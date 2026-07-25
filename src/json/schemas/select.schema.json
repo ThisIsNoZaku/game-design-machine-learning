@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/boardml/core/select.schema.json",
+  "$id": "src/json/schemas/select.schema.json",
   "title": "Select",
   "type": "object",
   "anyOf": [
@@ -15,10 +15,12 @@
             "filters": {
               "type": "array",
               "items": {
-                "$ref": "https://example.com/boardml/common/expr.schema.json"
-              }
+                "$ref": "./expression.schema.json"
+              },
+              "description": "TODO: Manual review - define filters."
             }
-          }
+          },
+          "description": "TODO: Manual review - define entity."
         }
       }
     },
@@ -33,10 +35,12 @@
             "filters": {
               "type": "array",
               "items": {
-                "$ref": "https://example.com/boardml/common/expr.schema.json"
-              }
+                "$ref": "./expression.schema.json"
+              },
+              "description": "TODO: Manual review - define filters."
             }
-          }
+          },
+          "description": "TODO: Manual review - define agent."
         }
       }
     },
@@ -51,10 +55,12 @@
             "filters": {
               "type": "array",
               "items": {
-                "$ref": "https://example.com/boardml/common/expr.schema.json"
-              }
+                "$ref": "./expression.schema.json"
+              },
+              "description": "TODO: Manual review - define filters."
             }
-          }
+          },
+          "description": "TODO: Manual review - define location."
         }
       }
     }

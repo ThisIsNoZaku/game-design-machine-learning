@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/boardml/game.schema.json",
+  "$id": "src/json/schemas/game.schema.json",
   "title": "BoardML Game Spec (Top-Level)",
   "type": "object",
   "required": [
@@ -20,22 +20,27 @@
       ],
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "unique identifier"
         },
         "version": {
           "type": "integer",
-          "minimum": 1
+          "minimum": 1,
+          "description": "TODO: Manual review - define version."
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "TODO: Manual review - define description."
         },
         "tags": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "description": "TODO: Manual review - define tags."
         }
-      }
+      },
+      "description": "TODO: Manual review - define metadata."
     },
     "parameters": {
       "type": "object",
@@ -51,10 +56,12 @@
             "type": "boolean"
           }
         ]
-      }
+      },
+      "description": "TODO: Manual review - define parameters."
     },
     "rng": {
-      "$ref": "https://example.com/boardml/rng/rng.schema.json"
+      "$ref": "./rng.schema.json",
+      "description": "TODO: Manual review - define rng."
     },
     "agents": {
       "oneOf": [
@@ -63,11 +70,13 @@
           "properties": {
             "min": {
               "type": "integer",
-              "minimum": 1
+              "minimum": 1,
+              "description": "TODO: Manual review - define min."
             },
             "max": {
               "type": "integer",
-              "minimum": 1
+              "minimum": 1,
+              "description": "TODO: Manual review - define max."
             }
           },
           "additionalProperties": false
@@ -77,37 +86,43 @@
           "properties": {
             "exactly": {
               "type": "integer",
-              "minimum": 1
+              "minimum": 1,
+              "description": "TODO: Manual review - define exactly."
             }
           },
           "additionalProperties": false
         }
-      ]
+      ],
+      "description": "TODO: Manual review - define agents."
     },
     "locations": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "https://example.com/boardml/core/location.schema.json"
-      }
+        "$ref": "./location.schema.json"
+      },
+      "description": "TODO: Manual review - define locations."
     },
     "entityTypes": {
       "type": "array",
       "items": {
-        "$ref": "https://example.com/boardml/core/entity.schema.json"
-      }
+        "$ref": "./entity.schema.json"
+      },
+      "description": "TODO: Manual review - define entityTypes."
     },
     "actions": {
       "type": "array",
       "minItems": 1,
       "items": {
-        "$ref": "https://example.com/boardml/core/action.schema.json"
-      }
+        "$ref": "./action.schema.json"
+      },
+      "description": "TODO: Manual review - define actions."
     },
     "rules": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "https://example.com/boardml/core/rule.schema.json"
-      }
+        "$ref": "./rule.schema.json"
+      },
+      "description": "TODO: Manual review - define rules."
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/boardml/core/phaseNode.schema.json",
+  "$id": "src/json/schemas/phaseNode.schema.json",
   "title": "PhaseNode",
   "type": "object",
   "required": [
@@ -8,34 +8,40 @@
   ],
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "unique identifier"
     },
     "label": {
-      "type": "string"
+      "type": "string",
+      "description": "display name"
     },
     "enabledActions": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "TODO: Manual review - define enabledActions."
     },
     "onEnter": {
       "type": "array",
       "items": {
-        "$ref": "https://example.com/boardml/common/effect.schema.json"
-      }
+        "$ref": "./effect.schema.json"
+      },
+      "description": "TODO: Manual review - define onEnter."
     },
     "onExit": {
       "type": "array",
       "items": {
-        "$ref": "https://example.com/boardml/common/effect.schema.json"
-      }
+        "$ref": "./effect.schema.json"
+      },
+      "description": "TODO: Manual review - define onExit."
     },
     "transitions": {
       "type": "array",
       "items": {
-        "$ref": "https://example.com/boardml/common/transition.schema.json"
-      }
+        "$ref": "./transition.schema.json"
+      },
+      "description": "TODO: Manual review - define transitions."
     }
   }
 }

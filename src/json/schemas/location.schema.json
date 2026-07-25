@@ -1,44 +1,63 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/boardml/core/location.schema.json",
+  "$id": "src/json/schemas/location.schema.json",
   "title": "Area",
   "type": "object",
   "properties": {
+    "id": {
+        "type": "string",
+        "description": "Unique identifier"
+    },
+    "label": {
+        "type": "string",
+        "description": "Display name"
+    },
+    "type" : {
+      "type": "string",
+      "description": "TODO: Manual review - define type."
+    },
     "links": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "TODO: Manual review - define links."
     },
     "shape": {
       "type": "object",
       "properties": {
         "rows": {
           "type": "integer",
-          "minimum": 1
+          "minimum": 1,
+          "description": "TODO: Manual review - define rows."
         },
         "cols": {
           "type": "integer",
-          "minimum": 1
+          "minimum": 1,
+          "description": "TODO: Manual review - define cols."
         },
         "state": {
-          "type": "object"
+          "type": "object",
+          "description": "TODO: Manual review - define state."
         }
       },
       "required": [
         "rows",
         "cols"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "TODO: Manual review - define shape."
     },
     "state": {
-      "type": "object"
+      "type": "object",
+      "description": "TODO: Manual review - define state."
     },
     "tags": {
       "type": "array",
-        "items": {
-            "type": "string"
-        }
+      "items": {
+        "type": "string"
+      },
+      "description": "TODO: Manual review - define tags."
     }
   },
   "additionalProperties": false

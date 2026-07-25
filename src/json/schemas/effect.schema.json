@@ -1,12 +1,25 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/boardml/common/effect.schema.json",
+  "$id": "src/json/schemas/effect.schema.json",
   "title": "Effect",
   "type": "object",
-  "required": ["expr"],
+  "required": [
+    "expr"
+  ],
   "properties": {
-    "expr": {"type": "string"},
-    "chance": {"type": "number", "minimum": 0, "maximum": 1},
-    "if": {"$ref": "https://example.com/boardml/common/expr.schema.json"}
+    "expr": {
+      "type": "string",
+      "description": "TODO: Manual review - define expr."
+    },
+    "chance": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "TODO: Manual review - define chance."
+    },
+    "if": {
+      "$ref": "./expression.schema.json",
+      "description": "TODO: Manual review - define if."
+    }
   }
 }

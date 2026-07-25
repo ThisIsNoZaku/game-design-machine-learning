@@ -1,13 +1,30 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/boardml/common/transition.schema.json",
+  "$id": "src/json/schemas/transition.schema.json",
   "title": "Transition",
   "type": "object",
-  "required": ["to", "from", "trigger"],
+  "required": [
+    "to",
+    "from",
+    "trigger"
+  ],
   "properties": {
-    "from" : {"type": "array", "items" : {"type": "string"}, "minItems": 1},
-    "to": {"type" : "string"},
-    "trigger": {"$ref": "https://example.com/boardml/common/expr.schema.json"}
+    "from": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "description": "TODO: Manual review - define from."
+    },
+    "to": {
+      "type": "string",
+      "description": "TODO: Manual review - define to."
+    },
+    "trigger": {
+      "$ref": "./expression.schema.json",
+      "description": "TODO: Manual review - define trigger."
+    }
   },
   "additionalProperties": false
 }

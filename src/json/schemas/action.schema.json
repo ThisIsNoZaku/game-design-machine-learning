@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/boardml/core/action.schema.json",
+  "$id": "src/json/schemas/action.schema.json",
   "title": "Action",
   "type": "object",
   "required": [
@@ -8,21 +8,24 @@
   ],
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "unique identifier"
     },
     "label": {
-      "type": "string"
+      "type": "string",
+      "description": "display name"
     },
     "tags": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Used to group and categorize actions."
     },
     "parameters": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "https://example.com/boardml/core/select.schema.json"
+        "$ref": "./select.schema.json"
       },
       "description": "Sequence of steps to execute as part of this action"
     }

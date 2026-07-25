@@ -1,15 +1,25 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/boardml/core/trigger.schema.json",
+  "$id": "src/json/schemas/trigger.schema.json",
   "title": "Trigger",
   "type": "object",
   "required": [],
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "description": "unique identifier"
     },
-    "effects": {"type": "array", "items": {"$ref": "https://example.com/boardml/common/effect.schema.json"}},
-    "limit": {"type": "integer", "description": "Times this trigger can fire per turn/game"}
+    "effects": {
+      "type": "array",
+      "items": {
+        "$ref": "./effect.schema.json"
+      },
+      "description": "TODO: Manual review - define effects."
+    },
+    "limit": {
+      "type": "integer",
+      "description": "Times this trigger can fire per turn/game"
+    }
   },
   "additionalProperties": false
 }

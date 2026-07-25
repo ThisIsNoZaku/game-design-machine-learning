@@ -1,11 +1,33 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/boardml/core/entity.schema.json",
+  "$id": "src/json/schemas/entity.schema.json",
   "title": "Entity",
   "type": "object",
-  "required": ["id", "archetype"],
+  "required": [
+    "id",
+    "archetype"
+  ],
   "properties": {
-    "id": {"type": "string"},
-    "state": {"type": "object", "additionalProperties": {"oneOf": [{"type": "number"}, {"type": "string"}, {"type": "boolean"}]}}
+    "id": {
+      "type": "string",
+      "description": "unique identifier"
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "description": "TODO: Manual review - define state."
+    }
   }
 }

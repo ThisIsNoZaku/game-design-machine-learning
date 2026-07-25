@@ -13,24 +13,26 @@ import rule from "./rule.schema.json";
 import transition from "./transition.schema.json";
 import trigger from "./trigger.schema.json";
 import select from "./select.schema.json";
+import rng from "./rng.schema.json";
 import Ajv2020 from "ajv/dist/2020";
 
 export function addSchemas(ajv: Ajv2020) {
-    ajv.addSchema(action, "action.schema.json");
-    ajv.addSchema(agent, "agent.schema.json");
-    ajv.addSchema(decision, "decision.schema.json");
-    ajv.addSchema(die, "die.schema.json");
-    ajv.addSchema(effect, "effect.schema.json");
-    ajv.addSchema(entity, "entity.schema.json");
-    ajv.addSchema(expression, "expr.schema.json");
-    ajv.addSchema(game, "game.schema.json");
-    ajv.addSchema(location, "location.schema.json");
-    ajv.addSchema(phaseNode, "phaseNode.schema.json");
-    ajv.addSchema(phases, "phases.schema.json");
-    ajv.addSchema(rule, "rule.schema.json");
-    ajv.addSchema(select, "select.schema.json");
-    ajv.addSchema(transition, "transition.schema.json");
-    ajv.addSchema(trigger, "trigger.schema.json");
+    ajv.addSchema(action, "boardml/action.schema.json");
+    ajv.addSchema(agent, "boardml/agent.schema.json");
+    ajv.addSchema(decision, "boardml/decision.schema.json");
+    ajv.addSchema(die, "boardml/die.schema.json");
+    ajv.addSchema(effect, "boardml/effect.schema.json");
+    ajv.addSchema(entity, "boardml/entity.schema.json");
+    ajv.addSchema(expression, "boardml/expression.schema.json");
+    ajv.addSchema(game, "boardml/game.schema.json");
+    ajv.addSchema(location, "boardml/location.schema.json");
+    ajv.addSchema(phaseNode, "boardml/phaseNode.schema.json");
+    ajv.addSchema(phases, "boardml/phases.schema.json");
+    ajv.addSchema(rule, "boardml/rule.schema.json");
+    ajv.addSchema(select, "boardml/select.schema.json");
+    ajv.addSchema(transition, "boardml/transition.schema.json");
+    ajv.addSchema(trigger, "boardml/trigger.schema.json");
+    ajv.addSchema(rng, "boardml/rng.schema.json");
 }
 
 export {

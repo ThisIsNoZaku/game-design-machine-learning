@@ -1,10 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/boardml/rng/rng.schema.json",
+  "$id": "src/json/schemas/die.schema.json",
   "title": "RNG Config",
   "type": "object",
   "required": [],
   "properties": {
-    "seed": {"type": "integer"}
+    "seed": {
+      "type": "integer",
+      "description": "TODO: Manual review - define seed."
+    }
   }
 }

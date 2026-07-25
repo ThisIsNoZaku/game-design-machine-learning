@@ -1,13 +1,18 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/boardml/core/agent.schema.json",
+  "$id": "src/json/schemas/agent.schema.json",
   "title": "Agent",
   "type": "object",
-  "required": ["id"],
+  "required": [
+    "id"
+  ],
   "properties": {
-    "id": {},
+    "id": {
+      "description": "unique identifier"
+    },
     "properties": {
-      "type": "object"
+      "type": "object",
+      "description": "The properties of the agent, which can include any additional information about the agent."
     }
   },
   "additionalProperties": false
