@@ -1,7 +1,7 @@
-import {ActionDescription} from "../../src/descriptions/GameDescription";
-import {ActionDescriptionExpansion} from "../../src/expansion";
-import {Effect} from "../../src/definitions/Effect";
-import {EffectActionStep} from "../../src/definitions/EffectActionStep";
+import {ActionDescription} from "../../../src/descriptions/GameDescription";
+import {ActionDescriptionExpansion} from "../../../src/expansion";
+import {Effect} from "../../../src/definitions/Effect";
+import {EffectActionStep} from "../../../src/definitions/EffectActionStep";
 
 describe("Action Description Expansion", () => {
     it("expands a description into a definition ", () => {
