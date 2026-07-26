@@ -1,6 +1,6 @@
 import {ActionResolutionTree} from "./ActionResolutionTree";
 import {All, Any} from "../Composites";
-import {Agent} from "./Agent";
+import {AgentDefinition} from "./AgentDefinition";
 
 /**
  * An action that an Agent can perform in the rules.
@@ -15,7 +15,7 @@ import {Agent} from "./Agent";
  *
  * Action steps are organized as a tree, where each step may have zero or more sub-steps.
  */
-export class Action {
+export class ActionDefinition {
     id: string;
     label?: string;
     actor: string;
@@ -42,11 +42,11 @@ export class Action {
         this.steps = steps;
         this.label = label;
         this.prerequisites = pre;
-        this.tags = tags;
-        this.parameters = parameters;
+        this.tags = tags || [];
+        this.parameters = parameters || {};
     }
 
-    canPerform(actor: Agent) {
+    canPerform(actor: AgentDefinition) {
         return false;
     }
 }
