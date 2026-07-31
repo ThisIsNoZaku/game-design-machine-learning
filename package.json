@@ -8,6 +8,8 @@
     "test:watch": "npx jest --watchAll",
     "test:coverage": "npx jest --coverage",
     "build": "npx tsc -p tsconfig.build.json",
+    "generate": "node scripts/generate-schema-types.cjs",
+    "check:schemas": "node scripts/check-schema-rules.cjs",
     "start": "node dist/cli.js"
   },
   "author": "",
@@ -30,6 +32,7 @@
     "class-validator": "^0.14.2",
     "class-validator-jsonschema": "^5.1.0",
     "commander": "^14.0.0",
+    "json-schema-to-typescript": "^15.0.4",
     "scikitjs": "^1.24.0"
   },
   "jest": {
