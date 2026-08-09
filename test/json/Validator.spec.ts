@@ -24,13 +24,13 @@ describe("JsonValidator with RuleSchema", () => {
                 "max": 4
             }
             ,
-            "locations": [
-                {
+            "locations": {
+                "area1": {
                     "id": "area1",
-                    "name": "Starting Zone",
+                    "label": "Starting Zone",
                     "type": "zone"
                 }
-            ],
+            },
             "entityTypes": [
                 {
                     "id": "entity1",
@@ -87,13 +87,13 @@ describe("JsonValidator with RuleSchema", () => {
                 "min": 2,
                 "max": 4
             },
-            "locations": [
-                {
+            "locations": {
+                "area1": {
                     "id": "area1",
-                    "name": "Starting Zone",
+                    "label": "Starting Zone",
                     "type": "zone"
                 }
-            ],
+            },
             "entityTypes": [
                 {
                     "id": "entity1",
