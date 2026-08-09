@@ -8,7 +8,7 @@ describe("Action Description Expansion", () => {
         const description:ActionDescription = {
             id: "action"
         };
-        expect(new ActionDescriptionExpansion().define(description)).toEqual({
+        expect(new ActionDescriptionExpansion().transform(description)).toEqual({
             actor: "agent",
             id: "action",
             label: undefined,

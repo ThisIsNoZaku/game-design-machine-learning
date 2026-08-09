@@ -1,13 +1,13 @@
 import {ActionDefinition} from "../definitions/ActionDefinition";
 import {ActionResolutionTree} from "../definitions/ActionResolutionTree";
-import {DefinitionGenerator} from "../definitions/DefinitionGenerator";
+import {DescriptionToDefinitionTransformer} from "../definitions/DescriptionToDefinitionTransformer";
 import {EffectActionStep} from "../definitions/EffectActionStep";
 import {ActionDescription} from "../descriptions/ActionDescription";
 
 type Scalar = string | number | boolean;
 
-export class ActionDescriptionExpansion implements DefinitionGenerator<ActionDescription, ActionDefinition> {
-    define(input: ActionDescription): ActionDefinition {
+export class ActionDescriptionExpansion implements DescriptionToDefinitionTransformer<ActionDescription, ActionDefinition> {
+    transform(input: ActionDescription): ActionDefinition {
         const actorValue = (input as {actor?: unknown}).actor;
         const actor = typeof actorValue === "string" ? actorValue : "agent";
         const parameters = this.expandParameters(input);
