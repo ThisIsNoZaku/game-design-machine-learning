@@ -1,6 +1,19 @@
 import {ActionResolutionTree} from "./ActionResolutionTree";
 import {All, Any} from "../Composites";
 import {AgentDefinition} from "./AgentDefinition";
+import {GameDefinition} from "./BaseGameDefinition";
+import {GameState} from "../state";
+import {RegionId} from "./Region";
+import {ExecutionContext} from "./ActionStepDefinition";
+
+export interface ActionDefinition {
+    id: string;
+    prerequisites?: Any | All;
+    tags?: Array<string>;
+    parameters?: Record<string, "string" | "number" | "boolean">;
+
+    execute(game: GameDefinition, state: GameState, parameters: Record<string, string | number | RegionId>): void;
+}
 
 /**
  * An action that an Agent can perform in the rules.
@@ -15,7 +28,7 @@ import {AgentDefinition} from "./AgentDefinition";
  *
  * Action steps are organized as a tree, where each step may have zero or more sub-steps.
  */
-export class ActionDefinition {
+export class BaseActionDefinition implements ActionDefinition {
     id: string;
     label?: string;
     actor: string;
@@ -26,7 +39,7 @@ export class ActionDefinition {
     /**
      *
      */
-    parameters?: Record<string, string | number | boolean>;
+    parameters?: Record<string, "string" | "number" | "boolean">;
 
     constructor(
         id: string,
@@ -35,7 +48,7 @@ export class ActionDefinition {
         label?: string,
         pre?: Any | All,
         tags?: Array<string>,
-        parameters?: Record<string, string | number | boolean>
+        parameters?: Record<string, "string" | "number" | "boolean">
     ) {
         this.id = id;
         this.actor = actor;
@@ -48,5 +61,13 @@ export class ActionDefinition {
 
     canPerform(actor: AgentDefinition) {
         return false;
+    }
+
+    execute(game: GameDefinition, state: GameState, parameters: Record<string, string | number | RegionId>): void {
+        const context: ExecutionContext = { game, state, parameters };
+        let current: ActionResolutionTree | null = this.steps;
+        while (current !== null && current.canResolve(context)) {
+            current = current.resolve(context);
+        }
     }
 }
