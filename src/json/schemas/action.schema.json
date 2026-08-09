@@ -27,7 +27,7 @@
       "additionalProperties": {
         "$ref": "./select.schema.json"
       },
-      "description": "Sequence of steps to execute as part of this action"
+      "description": "The parameters that can be passed to the action. The keys are the parameter names, and the values are the parameter definitions."
     }
   }
 }
