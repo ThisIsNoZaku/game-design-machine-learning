@@ -20,11 +20,7 @@ describe('"Act function', () => {
         const state : GameState = {} as GameState;
 
         expect(() => {
-            act(game, state, {
-                action: {id: ""} as any,
-                actor: "",
-                parameters: {}
-            });
+            act(game, state, {id: ""} as ActionDefinition, {});
         }).toThrow("Action '' not defined");
     })
     it("throws if the specified action parameters are missing a required parameter", () => {
@@ -50,11 +46,7 @@ describe('"Act function', () => {
         const state : GameState = {} as GameState;
 
         expect(() => {
-            act(game, state, {
-                action: {id: ""} as any,
-                actor: "",
-                parameters: {}
-            });
+            act(game, state, {id: ""} as ActionDefinition, {});
         }).toThrow("Action execution parameters are missing required 'string' parameter 'foo'");
     });
     it("throws if the specified action parameter value is the wrong are missing a required parameter", () => {
@@ -80,13 +72,7 @@ describe('"Act function', () => {
         const state : GameState = {} as GameState;
 
         expect(() => {
-            act(game, state, {
-                action: {id: ""} as any,
-                actor: "",
-                parameters: {
-                    foo: 1
-                }
-            });
+            act(game, state, {id: ""} as ActionDefinition, { foo: 1 });
         }).toThrow("Action execution parameter 'foo' is expected to be of type 'string', but was given a value of type 'number'");
     })
 });
