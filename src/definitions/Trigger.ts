@@ -1,4 +1,6 @@
-class Trigger {
+import {Effect} from "./Effect";
+
+export class Trigger {
     id?: string;
     effects?: Effect[];
     limit?: number;
