@@ -51,5 +51,6 @@
       "<rootDir>/.idea/.*",
       ".*\\\\.idea\\\\.*"
     ]
-  }
+  },
+  "type": "module"
 }
