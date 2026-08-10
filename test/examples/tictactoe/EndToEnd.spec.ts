@@ -1,3 +1,4 @@
+// @ts-ignore
 import {Tictactoe} from "../../../examples/tictactoe";
 import {BaseGameDefinition} from "../../../src/definitions/BaseGameDefinition";
 import act from "../../../src/execution/act";
