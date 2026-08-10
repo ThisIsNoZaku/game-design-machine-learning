@@ -1,10 +1,10 @@
 import tictactoe from "../../../examples/tictactoe.schema.json";
 import {FeatureSpec} from "../../../src/specification/ModelSpecs";
-import {Game} from "../../../src/rules/Game";
+import {BaseGameDefinition} from "../../../src/definitions/BaseGameDefinition";
 
 describe("Tictactoe spec", () => {
     it("defines the specification for encoding", async () => {
-        const [game] = Game.GenerateFromDefinition(tictactoe);
+        const [game] = BaseGameDefinition.GenerateFromDefinition(tictactoe);
         expect(await game.spec()).toEqual({
             fields: [
                 {
@@ -43,7 +43,8 @@ describe("Tictactoe spec", () => {
                         }
                     ]
                 }
-            ]
+            ],
+            setEncoding: "pad"
         } as FeatureSpec);
     });
 })

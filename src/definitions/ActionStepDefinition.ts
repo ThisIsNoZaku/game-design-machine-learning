@@ -12,7 +12,21 @@
  *
  * In a Decision step, an actor will make a decision about which sub-step to take next.
  */
+import {GameDefinition} from "./BaseGameDefinition";
+import {GameState} from "../state";
+import {RegionId} from "./Region";
 
-export abstract class ActionStep {
+export type ExecutionContext = {
+    game: GameDefinition;
+    state: GameState;
+    parameters: Record<string, string | number | RegionId>;
+};
+
+export abstract class ActionStepDefinition {
     public abstract get allowsMultipleChildren(): boolean;
+
+    /**
+     * Apply this step's effects to the game state.
+     */
+    public abstract apply(context: ExecutionContext): void;
 }

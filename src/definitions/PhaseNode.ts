@@ -1,4 +1,7 @@
-class PhaseNode {
+import {Effect} from "./Effect";
+import {Transition} from "./Transition";
+
+export class PhaseNode {
     id: string;
     label?: string;
     enabledActions?: string[];

@@ -1,4 +1,4 @@
-class Die {
+export class DieDefinition {
     seed?: number;
     sides: (number | string)[];
 

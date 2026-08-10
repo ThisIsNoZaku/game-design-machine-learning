@@ -1,4 +1,4 @@
-class Expr {
+export class Expr {
     expr: string;
     explain?: string;
 

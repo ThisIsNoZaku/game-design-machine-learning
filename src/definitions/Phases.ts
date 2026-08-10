@@ -1,4 +1,6 @@
-class Phases {
+import {PhaseNode} from "./PhaseNode";
+
+export class Phases {
     initial: string;
     nodes: Record<string, PhaseNode>;
 

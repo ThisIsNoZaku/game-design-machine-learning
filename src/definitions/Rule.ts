@@ -1,5 +1,7 @@
 import Selector from "../Selector";
-import { Agent } from "./Agent";
+import { AgentDefinition } from "./AgentDefinition";
+import {EntityDefinition} from "./EntityDefinition";
+import {Region} from "./Region";
 
 /**
  * A rule that describes an instruction or constraint in the game.
@@ -20,7 +22,7 @@ import { Agent } from "./Agent";
  *
  * Alternatively, the chess rule for pawn promotion is a Triggered rule, as it is applied when a pawn is placed in a particular location.
  */
-class Rule {
+export class Rule {
     id: string;
     type: RuleType;
     description?: string;
@@ -43,19 +45,19 @@ export abstract class RuleTarget<T> {
     }
 }
 
-export class EntityRuleTarget extends RuleTarget<Entity> {
-    constructor(type: string, filter: Selector<Entity>) {
+export class EntityRuleTarget extends RuleTarget<EntityDefinition> {
+    constructor(type: string, filter: Selector<EntityDefinition>) {
         super(type, filter);
     }
 }
 
-export class LocationRuleTarget extends RuleTarget<Location> {
-    constructor(type: string, filter: Selector<Location>) {
+export class LocationRuleTarget extends RuleTarget<Region> {
+    constructor(type: string, filter: Selector<Region>) {
         super(type, filter);
     }
 }
-export class AgentRuleTarget extends RuleTarget<Agent> {
-    constructor(type: string, filter: Selector<Agent>) {
+export class AgentRuleTarget extends RuleTarget<AgentDefinition> {
+    constructor(type: string, filter: Selector<AgentDefinition>) {
         super(type, filter);
     }
 }

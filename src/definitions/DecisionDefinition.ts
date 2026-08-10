@@ -1,4 +1,7 @@
-class Decision {
+import {Effect} from "./Effect";
+import {Expr} from "./Expr";
+
+export class DecisionDefinition {
     id: string;
     label?: string;
     from?: string;

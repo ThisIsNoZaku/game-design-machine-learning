@@ -1,4 +1,4 @@
-import {ActionStep} from "./ActionStep";
+import {ActionStepDefinition, ExecutionContext} from "./ActionStepDefinition";
 
 /**
  * Representation of the steps taken to resolve an action.
@@ -10,10 +10,10 @@ import {ActionStep} from "./ActionStep";
  * If the ActionStep does not allow children, an error is thrown if any children are provided.
  */
 export class ActionResolutionTree {
-    actionStep: ActionStep;
+    actionStep: ActionStepDefinition;
     children: Array<ActionResolutionTree> = [];
 
-    constructor(actionStep: ActionStep, children?: Array<ActionResolutionTree>) {
+    constructor(actionStep: ActionStepDefinition, children?: Array<ActionResolutionTree>) {
         this.actionStep = actionStep;
         if(!actionStep.allowsMultipleChildren && children && children.length > 1) {
             throw new Error("This ActionStep does not allow more than one child");
@@ -24,16 +24,16 @@ export class ActionResolutionTree {
         }
     }
 
-    canResolve(context: any): boolean {
-        return false;
+    canResolve(_context: ExecutionContext): boolean {
+        return true;
     }
 
     /**
-     * Resolve the action step at the root of this tree. Then, based on the result of that step, return one of the
-     * children to resolve further.
-     * @param context
+     * Apply this node's step to the context, then return the next child tree to resolve,
+     * or null if resolution is complete.
      */
-    resolve(context: any): ActionResolutionTree | null {
-        return null;
+    resolve(context: ExecutionContext): ActionResolutionTree | null {
+        this.actionStep.apply(context);
+        return this.children.length > 0 ? this.children[0] : null;
     }
 }

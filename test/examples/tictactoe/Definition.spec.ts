@@ -1,6 +1,6 @@
 import tictactoe from "../../../examples/tictactoe.schema.json";
 import {RuleDocumentValidator} from "../../../src/json/RuleDocumentValidator";
-import {Game} from "../../../src/rules/Game";
+import {BaseGameDefinition} from "../../../src/definitions/BaseGameDefinition";
 
 describe("Tictactoe Definition", () => {
     it("loads and validates the definition", () => {

@@ -1,17 +1,34 @@
-import {ThingState} from "./State";
-import {Game} from "../rules/Game";
-import {Region, RegionInstance} from "../rules/Region";
+import {ThingState} from "./ThingState";
+import {BaseGameDefinition, GameDefinition} from "../definitions/BaseGameDefinition";
+import {Region, RegionInstance} from "../definitions/Region";
+import {v4} from "../uuid";
 
+export interface GameState {
+    winners: string[];
+
+    terminated: boolean;
+    players: {
+        active: string,
+        [id: string]: ThingState | string
+    };
+    entities: { [id: number]: ThingState };
+    regions: { [id: string]: RegionInstance };
+}
 /**
  * Defines the state of the game, including player, entities and environment properties.
  */
-export class GameState {
-    players: { [id: number]: ThingState };
-    private entities: { [id: number]: ThingState };
+export class ConcreteGameState implements  GameState{
+    players: {
+        active: string,
+        [id: string]: ThingState | string
+    };
+    entities: { [id: number]: ThingState };
     regions: { [id: string]: RegionInstance };
+    // If true, the game has ended.
+    terminated: boolean;
 
     constructor(agents: {
-                    [p: number]:
+                    [p: string]:
                         ThingState
                 },
                 entities: {
@@ -21,9 +38,11 @@ export class GameState {
                 regions: {
                     [p: number]: RegionInstance
                 }) {
-        this.players = agents;
+        // TODO: Rules for picking first active player
+        this.players = {...agents, active: "1"};
         this.entities = entities;
         this.regions = regions;
+        this.terminated = false;
     }
 
     /**
@@ -31,12 +50,15 @@ export class GameState {
      *
      * This is the state of the game before any actions have been taking, including the application of any setup rules where any decisions are made or random elements applied.
      */
-    static generateInitialState(game: Game, initialState: any): GameState {
+    static generateInitialState(game: GameDefinition, initialState: GameState): GameState {
+        if(!game.agents) {
+            throw new Error("Game definition doesn't define agents");
+        }
         const agents: { [id: number]: ThingState } = {};
         if (game.agents.exactly) {
             for (let i = 1; i <= (game.agents.exactly); i++) {
                 agents[i] = {
-                    id: i
+                    id: "" + i
                 };
             }
         }
@@ -44,29 +66,24 @@ export class GameState {
         const locations: { [id: string]: RegionInstance } = {};
         locations["play_area"] = {
             id: "play_area",
-            contains: []
+            contains: [],
+            state: {...(initialState.regions["play_area"]?.state || {})}
         };
         for (const location of Object.values(game.locations)) {
             locations[location.id] = {
                 id: location.id,
-                contains: location.contains
+                contains: location.contains,
+                state: {...(initialState.regions[location.id]?.state || {})}
             };
         }
 
         const entities: { [id: number]: ThingState } = {};
         if (initialState?.entities) {
             for (const [id, entity] of Object.entries(initialState.entities)) {
-                entities[parseInt(id)] = {...entity as object, id: parseInt(id)};
+                entities[parseInt(id)] = {...entity as object, id: v4() };
             }
         }
 
-        return new GameState(agents, entities, locations);
-    }
-
-    region(id: string) {
-        if (!this.regions[id]) {
-            throw new Error(`No location with id '${id}'.`);
-        }
-        return this.regions[id];
+        return new ConcreteGameState(agents, entities, locations);
     }
 }

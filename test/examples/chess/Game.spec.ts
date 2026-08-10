@@ -1,18 +1,18 @@
 import chess from "../../../examples/chess.schema.json";
 import {RuleDocumentValidator} from "../../../src/json/RuleDocumentValidator";
-import {Game} from "../../../src/rules/Game";
-import {Agent} from "../../../src/rules/Agent";
+import {BaseGameDefinition} from "../../../src/definitions/BaseGameDefinition";
+import {AgentDefinition} from "../../../src/definitions/AgentDefinition";
 
 namespace Chess {
     describe("Chess instance", () => {
-        let gameModel: Game;
+        let gameModel: BaseGameDefinition;
         let gameState: any;
         beforeEach(() => {
             const parsed: any = new RuleDocumentValidator().validate(chess);
-            [gameModel, gameState] = Game.GenerateFromDefinition(parsed);
+            [gameModel, gameState] = BaseGameDefinition.GenerateFromDefinition(parsed);
         })
         it("returns player 1 as first actor at the start of the game", () => {
-            const player1 = new Agent("1");
+            const player1 = new AgentDefinition("1");
             const allowedActions = gameModel.getAllowedActions(gameState);
             expect(allowedActions.length).toBe(1);
         });

@@ -1,12 +1,12 @@
-import {Game} from "../../../src/rules/Game";
+import {BaseGameDefinition} from "../../../src/definitions/BaseGameDefinition";
 import tictactoe from "../../../examples/tictactoe.schema.json";
 import {GameState} from "../../../src/state/GameState";
 
 describe("Tictactoe Model", () => {
-    let game: Game;
+    let game: BaseGameDefinition;
     let state: GameState;
     beforeAll(() => {
-        [game, state] = Game.GenerateFromDefinition(tictactoe);
+        [game, state] = BaseGameDefinition.GenerateFromDefinition(tictactoe);
     })
     it("generates an empty board", () => {
         expect(Object.values(state.regions)).toEqual([

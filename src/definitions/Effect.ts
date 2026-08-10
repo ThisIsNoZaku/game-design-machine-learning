@@ -1,4 +1,6 @@
-class Effect {
+import {Expr} from "./Expr";
+
+export class Effect {
     expr: string;
     chance?: number;
     if?: Expr;

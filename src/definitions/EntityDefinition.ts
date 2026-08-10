@@ -1,4 +1,4 @@
-class Entity {
+export class EntityDefinition {
     id: string;
     archetype: string;
     area?: string;
