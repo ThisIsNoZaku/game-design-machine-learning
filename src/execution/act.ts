@@ -3,7 +3,7 @@ import {GameState} from "../state";
 import {ActionDefinition} from "../definitions/ActionDefinition";
 import {RegionId} from "../definitions/Region";
 
-export default function act(game: GameDefinition, state: GameState, action: ActionDefinition, parameters: Record<string, string | number | RegionId>): GameState {
+export default function act(game: GameDefinition, state: GameState, action: ActionDefinition, parameters: Record<string, string | number | boolean | RegionId>): GameState {
     const expectedAction = game.actions.find(i => i.id === action.id);
     if(!expectedAction) {
         throw new Error(`Action '${action.id}' not defined`);

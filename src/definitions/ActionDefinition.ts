@@ -12,7 +12,7 @@ export interface ActionDefinition {
     tags?: Array<string>;
     parameters?: Record<string, "string" | "number" | "boolean">;
 
-    execute(game: GameDefinition, state: GameState, parameters: Record<string, string | number | RegionId>): void;
+    execute(game: GameDefinition, state: GameState, parameters: Record<string, string | number | boolean | RegionId>): void;
 }
 
 /**
