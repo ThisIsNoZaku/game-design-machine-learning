@@ -120,3 +120,5 @@ export function GenerateRegion(id:string, region: Region): Region {
 }
 
 export type RegionId = string;
+
+export const PLAY_AREA = "play_area";
