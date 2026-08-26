@@ -1,3 +1,5 @@
+import {GameState} from "../state";
+
 export type NumericKind = "numeric";
 export type BooleanKind = "boolean";
 export type DictKind = "dict";
@@ -94,6 +96,13 @@ export interface FeatureSpec {
     // How to aggregate variable-length sets of objects:
     setEncoding?: "pad" | "mean" | "sum" | "max"; // default "pad"
     maxObjects?: number;        // required if setEncoding="pad"
+    /**
+     * Encode the given game state with this spec.
+     * @param state
+     */
+    encode(state: GameState): NumericArray
 }
 
 export type TransformationSpec = FeatureSpec | FieldSpec;
+
+export type NumericArray = (number | NumericArray)[]

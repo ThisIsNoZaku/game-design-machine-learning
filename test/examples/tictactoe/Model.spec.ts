@@ -11,7 +11,7 @@ describe("Tictactoe Model", () => {
     it("generates an empty board", () => {
         expect(Object.values(state.regions)).toEqual([
             {
-                id: "play_area",
+                id: PLAY_AREA,
                 contains: ["board"]
             },
             {
