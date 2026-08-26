@@ -1,6 +1,6 @@
 import {ThingState} from "./ThingState";
 import {BaseGameDefinition, GameDefinition} from "../definitions/BaseGameDefinition";
-import {Region, RegionInstance} from "../definitions/Region";
+import {PLAY_AREA, Region, RegionInstance} from "../definitions/Region";
 import {v4} from "../uuid";
 
 export interface GameState {
@@ -12,7 +12,7 @@ export interface GameState {
         [id: string]: ThingState | string
     };
     entities: { [id: number]: ThingState };
-    regions: { [id: string]: RegionInstance };
+    regions: { playArea: RegionInstance, [id: string]: RegionInstance };
 }
 /**
  * Defines the state of the game, including player, entities and environment properties.
@@ -23,7 +23,7 @@ export class ConcreteGameState implements  GameState{
         [id: string]: ThingState | string
     };
     entities: { [id: number]: ThingState };
-    regions: { [id: string]: RegionInstance };
+    regions: { playArea: RegionInstance, [id: string]: RegionInstance };
     // If true, the game has ended.
     terminated: boolean;
 
@@ -64,10 +64,10 @@ export class ConcreteGameState implements  GameState{
         }
 
         const locations: { [id: string]: RegionInstance } = {};
-        locations["play_area"] = {
-            id: "play_area",
+        locations[PLAY_AREA] = {
+            id: PLAY_AREA,
             contains: [],
-            state: {...(initialState.regions["play_area"]?.state || {})}
+            state: {...(initialState.regions[PLAY_AREA]?.state || {})}
         };
         for (const location of Object.values(game.locations)) {
             locations[location.id] = {
