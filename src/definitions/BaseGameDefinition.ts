@@ -1,6 +1,6 @@
 import {ActionDefinition} from "./ActionDefinition";
 import {ConcreteGameState, GameState} from "../state/GameState";
-import {GenerateRegion, Region} from "./Region";
+import {GenerateRegion, PLAY_AREA, Region, RegionId} from "./Region";
 import {FeatureSpec} from "../specification/ModelSpecs";
 import SpecProvider from "../specification/SpecProvider";
 
@@ -26,7 +26,12 @@ export interface Agents {
     exactly?: number;
 }
 
-export interface GameDefinition {
+export interface ResolvedActionSelection {
+    action: ActionDefinition;
+    parameters: Record<string, string | number | boolean | RegionId>;
+}
+
+export interface GameDefinition extends SpecProvider{
     readonly metadata: GameDefinitionMetadata;
     readonly parameters: Record<string, string | number | boolean>;
     readonly agents: Agents;
@@ -38,6 +43,18 @@ export interface GameDefinition {
     getInitialState(): GameState;
 
     get actions(): Array<ActionDefinition>;
+
+    /**
+     * Return a state observation for the given actor.
+     * @param state
+     * @param actorId
+     */
+    getObservation(state: GameState, actorId: string): GameState;
+
+    /**
+     * Translate a model prediction vector to a concrete action selection and parameters.
+     */
+    resolveActionSelection(state: GameState, prediction: number[]): ResolvedActionSelection;
 }
 /**
  * A stateless definition of a game ruleset.
@@ -89,8 +106,8 @@ export class BaseGameDefinition implements GameDefinition, SpecProvider {
 
         const locationsMap: { [id: string]: Region } = {};
 
-        const playArea: Region = locationsMap["play_area"] = {
-            id: "play_area",
+        const playArea: Region = locationsMap[PLAY_AREA] = {
+            id: PLAY_AREA,
             contains: []
         };
         const locationsToExpand:[string, Region, boolean][] = Object.entries(locations)
@@ -113,6 +130,30 @@ export class BaseGameDefinition implements GameDefinition, SpecProvider {
     getAllowedActions(state: any): any[] {
         // Generate variations of all possible actions.
         return this._actions;
+    }
+
+    resolveActionSelection(state: GameState, prediction: number[]): ResolvedActionSelection {
+        void state;
+        if (!Array.isArray(prediction) || prediction.length === 0) {
+            throw new Error("Prediction must be a non-empty numeric array");
+        }
+        if (this._actions.length === 0) {
+            throw new Error("Game definition does not define any actions");
+        }
+
+        const rawActionIndex = Number(prediction[0]);
+        const safeActionIndex = Number.isFinite(rawActionIndex)
+            ? Math.floor(Math.abs(rawActionIndex)) % this._actions.length
+            : 0;
+        const action = this._actions[safeActionIndex];
+
+        if (!action.parameters || Object.keys(action.parameters).length === 0) {
+            return {action, parameters: {}};
+        }
+
+        throw new Error(
+            `Game '${this.metadata.id}' must override resolveActionSelection() for parameterized actions`
+        );
     }
 
     // expandLocations(locations) {
@@ -173,7 +214,14 @@ export class BaseGameDefinition implements GameDefinition, SpecProvider {
         }
 
         // use pooled encoding to avoid requiring maxObjects
-        const spec: FeatureSpec = {fields, setEncoding: "pad"};
+        const spec: FeatureSpec = {
+            fields,
+            setEncoding: "pad",
+            encode(state: GameState): number[] {
+                void state;
+                throw new Error("BaseGameDefinition.spec().encode() must be implemented by a concrete game definition");
+            }
+        };
         return Promise.resolve(spec);
     }
 
