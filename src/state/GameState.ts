@@ -23,6 +23,7 @@ export class ConcreteGameState implements  GameState{
         [id: string]: ThingState | string
     };
     entities: { [id: number]: ThingState };
+    winners: string[];
     regions: { playArea: RegionInstance, [id: string]: RegionInstance };
     // If true, the game has ended.
     terminated: boolean;
@@ -36,6 +37,7 @@ export class ConcreteGameState implements  GameState{
                         ThingState
                 },
                 regions: {
+                    playArea: RegionInstance
                     [p: number]: RegionInstance
                 }) {
         // TODO: Rules for picking first active player
@@ -43,6 +45,7 @@ export class ConcreteGameState implements  GameState{
         this.entities = entities;
         this.regions = regions;
         this.terminated = false;
+        this.winners = [];
     }
 
     /**
@@ -63,11 +66,12 @@ export class ConcreteGameState implements  GameState{
             }
         }
 
-        const locations: { [id: string]: RegionInstance } = {};
-        locations[PLAY_AREA] = {
-            id: PLAY_AREA,
-            contains: [],
-            state: {...(initialState.regions[PLAY_AREA]?.state || {})}
+        const locations: { playArea: RegionInstance, [id: string]: RegionInstance } = {
+            playArea : {
+                id: PLAY_AREA,
+                contains: [],
+                state: {...(initialState.regions[PLAY_AREA]?.state || {})}
+            }
         };
         for (const location of Object.values(game.locations)) {
             locations[location.id] = {
