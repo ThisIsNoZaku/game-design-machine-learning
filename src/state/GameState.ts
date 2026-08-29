@@ -3,6 +3,8 @@ import {BaseGameDefinition, GameDefinition} from "../definitions/BaseGameDefinit
 import {PLAY_AREA, Region, RegionInstance} from "../definitions/Region";
 import {v4} from "../uuid";
 
+export type GameRegions = { playArea: RegionInstance & {id: "play_area"}, [id: string]: RegionInstance };
+
 export interface GameState {
     winners: string[];
 
@@ -12,7 +14,7 @@ export interface GameState {
         [id: string]: ThingState | string
     };
     entities: { [id: number]: ThingState };
-    regions: { playArea: RegionInstance, [id: string]: RegionInstance };
+    regions: GameRegions;
 }
 /**
  * Defines the state of the game, including player, entities and environment properties.
@@ -24,7 +26,7 @@ export class ConcreteGameState implements  GameState{
     };
     entities: { [id: number]: ThingState };
     winners: string[];
-    regions: { playArea: RegionInstance, [id: string]: RegionInstance };
+    regions: GameRegions;
     // If true, the game has ended.
     terminated: boolean;
 
@@ -36,10 +38,7 @@ export class ConcreteGameState implements  GameState{
                     [p: number]:
                         ThingState
                 },
-                regions: {
-                    playArea: RegionInstance
-                    [p: number]: RegionInstance
-                }) {
+                regions: GameRegions) {
         // TODO: Rules for picking first active player
         this.players = {...agents, active: "1"};
         this.entities = entities;
@@ -66,7 +65,7 @@ export class ConcreteGameState implements  GameState{
             }
         }
 
-        const locations: { playArea: RegionInstance, [id: string]: RegionInstance } = {
+        const locations: GameRegions = {
             playArea : {
                 id: PLAY_AREA,
                 contains: [],
