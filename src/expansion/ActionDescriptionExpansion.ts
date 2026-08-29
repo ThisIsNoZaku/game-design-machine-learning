@@ -1,10 +1,8 @@
-import {ActionDefinition} from "../definitions/ActionDefinition";
+import {ActionDefinition, BaseActionDefinition} from "../definitions/ActionDefinition";
 import {ActionResolutionTree} from "../definitions/ActionResolutionTree";
 import {DescriptionToDefinitionTransformer} from "../definitions/DescriptionToDefinitionTransformer";
 import {EffectActionStep} from "../definitions/EffectActionStep";
 import {ActionDescription} from "../descriptions/ActionDescription";
-
-type Scalar = string | number | boolean;
 
 export class ActionDescriptionExpansion implements DescriptionToDefinitionTransformer<ActionDescription, ActionDefinition> {
     transform(input: ActionDescription): ActionDefinition {
@@ -12,7 +10,7 @@ export class ActionDescriptionExpansion implements DescriptionToDefinitionTransf
         const actor = typeof actorValue === "string" ? actorValue : "agent";
         const parameters = this.expandParameters(input);
 
-        return new ActionDefinition(
+        return new BaseActionDefinition(
             input.id,
             actor,
             new ActionResolutionTree(new EffectActionStep()),
@@ -23,12 +21,12 @@ export class ActionDescriptionExpansion implements DescriptionToDefinitionTransf
         );
     }
 
-    private expandParameters(input: ActionDescription): Record<string, Scalar> | undefined {
+    private expandParameters(input: ActionDescription): Record<string, "string" | "number" | "boolean"> | undefined {
         if (!input.parameters) {
             return undefined;
         }
-        return Object.keys(input.parameters).reduce<Record<string, Scalar>>((acc, key) => {
-            acc[key] = key;
+        return Object.keys(input.parameters).reduce<Record<string, "string" | "number" | "boolean">>((acc, key) => {
+            acc[key] = "string";
             return acc;
         }, {});
     }
