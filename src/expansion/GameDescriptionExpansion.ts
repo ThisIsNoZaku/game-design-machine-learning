@@ -1,12 +1,15 @@
 import {DescriptionToDefinitionTransformer} from "../definitions/DescriptionToDefinitionTransformer";
 import {BaseGameDefinition, GameDefinition} from "../definitions/BaseGameDefinition";
-import {Region} from "../definitions/Region";
+import {PLAY_AREA, Region} from "../definitions/Region";
 import {BoardMLGameSpecTopLevelDescription} from "../descriptions/GameDescription";
 import {ActionDescriptionExpansion} from "./ActionDescriptionExpansion";
+import {LocationDescriptionExpansion} from "./LocationDescriptionExpansion";
 import {FeatureSpec} from "../specification/ModelSpecs";
+import {AreaDescription} from "../descriptions/LocationDescription";
 
 export class GameDescriptionExpansion implements DescriptionToDefinitionTransformer<BoardMLGameSpecTopLevelDescription, GameDefinition> {
     private readonly actionExpansion = new ActionDescriptionExpansion();
+    private readonly locationExpansion = new LocationDescriptionExpansion();
 
     transform(input: BoardMLGameSpecTopLevelDescription): GameDefinition {
         const metadataName = this.getMetadataName(input);
@@ -61,25 +64,22 @@ export class GameDescriptionExpansion implements DescriptionToDefinitionTransfor
         return input.metadata.id;
     }
 
-    private expandLocations(input: { [k: string]: BoardMLGameSpecTopLevelDescription["locations"][string] }): {
+    private expandLocations(input: { [k: string]: AreaDescription }): {
+        play_area: Region;
         [id: string]: Region
     } {
-        return Object.entries(input).reduce<{ [id: string]: Region }>((acc, [id, area]) => {
-            const subRegionShape = area.shape
-                ? {
-                    id,
-                    rows: area.shape.rows,
-                    cols: area.shape.cols,
-                    state: {id, ...(area.shape.state || {})}
-                }
-                : undefined;
-
-            acc[id] = {
-                id,
-                contains: area.links || [],
-                shape: subRegionShape
-            };
+        const locations = Object.entries(input).reduce<{ play_area: Region, [id: string]: Region }>((acc, [id, area]) => {
+            acc[id] = this.locationExpansion.transform({
+                ...area,
+                id
+            });
             return acc;
-        }, {});
+        }, {
+            play_area: this.locationExpansion.transform({
+                id: PLAY_AREA
+            })
+        });
+        locations[PLAY_AREA].contains = Object.keys(input).filter((id => id !== PLAY_AREA));
+        return locations;
     }
 }
