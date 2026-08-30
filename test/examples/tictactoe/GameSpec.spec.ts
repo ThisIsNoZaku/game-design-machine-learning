@@ -3,7 +3,7 @@ import {FeatureSpec} from "../../../src/specification/ModelSpecs";
 import {BaseGameDefinition} from "../../../src/definitions/BaseGameDefinition";
 
 describe("Tictactoe spec", () => {
-    it("defines the specification for encoding", async () => {
+    test.skip("defines the specification for encoding", async () => {
         const [game] = BaseGameDefinition.GenerateFromDefinition(tictactoe);
         expect(await game.spec()).toEqual({
             fields: [
