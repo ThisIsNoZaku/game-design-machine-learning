@@ -105,20 +105,6 @@ export interface BoardMLGameSpecTopLevelDescription {
 export interface SrcJsonSchemasRngSchemaJson {
   [k: string]: unknown;
 }
-export interface AreaDescription {
-  links?: string[];
-  shape?: {
-    rows: number;
-    cols: number;
-    state?: {
-      [k: string]: unknown;
-    };
-  };
-  state?: {
-    [k: string]: unknown;
-  };
-  tags?: string[];
-}
 export interface EntityDescription {
   id: string;
   state?: {
