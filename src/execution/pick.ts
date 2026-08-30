@@ -1,4 +1,4 @@
-import {RegionInstance} from "../definitions/Region";
+import {RegionInstance} from "../state/RegionInstance";
 
 export function pick_regions(locations: Record<string, RegionInstance>): RegionInstance[] {
     return Object.values(locations);

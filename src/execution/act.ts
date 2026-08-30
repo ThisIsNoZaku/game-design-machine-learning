@@ -1,7 +1,7 @@
 import {GameDefinition} from "../definitions/BaseGameDefinition";
 import {GameState} from "../state";
 import {ActionDefinition} from "../definitions/ActionDefinition";
-import {RegionId} from "../definitions/Region";
+import {RegionId} from "../definitions/RegionDefinition";
 
 export default function act(game: GameDefinition, state: GameState, action: ActionDefinition, parameters: Record<string, string | number | boolean | RegionId>): GameState {
     const expectedAction = game.actions.find(i => i.id === action.id);

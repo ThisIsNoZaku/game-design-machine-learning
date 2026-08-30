@@ -1,6 +1,6 @@
 import {ThingState} from "./ThingState";
 import {BaseGameDefinition, GameDefinition} from "../definitions/BaseGameDefinition";
-import {PLAY_AREA, Region, RegionInstance} from "../definitions/Region";
+import {PLAY_AREA, RegionDefinition, RegionInstance} from "../definitions/RegionDefinition";
 import {v4} from "../uuid";
 
 export type GameRegions = { playArea: RegionInstance & {id: "play_area"}, [id: string]: RegionInstance };

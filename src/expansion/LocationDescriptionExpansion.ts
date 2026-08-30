@@ -1,9 +1,9 @@
 import {DescriptionToDefinitionTransformer} from "../definitions/DescriptionToDefinitionTransformer";
-import {Region} from "../definitions/Region";
+import {RegionDefinition} from "../definitions/RegionDefinition";
 import {AreaDescription} from "../descriptions/LocationDescription";
 
-export class LocationDescriptionExpansion implements DescriptionToDefinitionTransformer<AreaDescription, Region> {
-    transform(input: AreaDescription): Region {
+export class LocationDescriptionExpansion implements DescriptionToDefinitionTransformer<AreaDescription, RegionDefinition> {
+    transform(input: AreaDescription): RegionDefinition {
         const idValue = (input as {id?: unknown}).id;
         const id = typeof idValue === "string" ? idValue : "region";
         const shape = input.shape
@@ -19,7 +19,7 @@ export class LocationDescriptionExpansion implements DescriptionToDefinitionTran
             };
         const subregions = input.shape
             ? Array.from({length: shape.cols}, (_, col) =>
-                Array.from({length: shape.rows}, (_, row): Region => ({
+                Array.from({length: shape.rows}, (_, row): RegionDefinition => ({
                     id: `${id}_${col}_${row}`,
                     contains: []
                 }))

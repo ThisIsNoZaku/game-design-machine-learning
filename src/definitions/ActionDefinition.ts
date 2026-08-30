@@ -3,7 +3,7 @@ import {All, Any} from "../Composites";
 import {AgentDefinition} from "./AgentDefinition";
 import {GameDefinition} from "./BaseGameDefinition";
 import {GameState} from "../state";
-import {RegionId} from "./Region";
+import {RegionId} from "./RegionDefinition";
 import {ExecutionContext} from "./ActionStepDefinition";
 
 export interface ActionDefinition {

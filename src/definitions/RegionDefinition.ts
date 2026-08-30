@@ -7,25 +7,27 @@
  */
 import {ThingState} from "../state";
 
-export interface Region {
+export interface RegionDefinition {
     id: string;
     contains: string[];
-    shape?: RegionShape
-    subregions?: Region[]
-    subRegionShape?: RegionShape
+    shape?: RegionDefinitionShape
+    subregions?: RegionDefinition[]
+    subRegionShape?: RegionDefinitionShape
 }
 
-export interface IrregularRegion extends Region{
+export type PlayAreaDefinition = RegionDefinition & {id: "play_area"};
+
+export interface IrregularRegionDefinition extends RegionDefinition{
     /**
      * Definition for all subregions within this region.
      */
-    subregions: Region[];
+    subregions: RegionDefinition[];
 }
 
 /**
  * Definition for a region which is laid out in a regular grid pattern.
  */
-export interface GridRegion extends  Region {
+export interface GridRegionDefinition extends  RegionDefinition {
     /**
      * How many columns the grid has.
      */
@@ -37,25 +39,25 @@ export interface GridRegion extends  Region {
     /**
     * State shape of all subregions within this region
     */
-    subRegionShape: RegionShape
+    subRegionShape: RegionDefinitionShape
 }
 
-export interface RegionShape {
+export interface RegionDefinitionShape {
     rows: number,
     cols: number,
     state: ThingState,
 }
 
-export class BaseRegion implements  Region {
+export class BaseRegionDefinition implements  RegionDefinition {
     id: string;
-    shape: RegionShape;
+    shape: RegionDefinitionShape;
     contains: string[];
-    subregions?: Region[];
+    subregions?: RegionDefinition[];
 
     constructor(
         id: string,
-        shape: RegionShape,
-        subregions?: Region[],
+        shape: RegionDefinitionShape,
+        subregions?: RegionDefinition[],
     ) {
         if(!id) {
             throw new Error("ID must be defined");
@@ -75,13 +77,13 @@ export class BaseRegion implements  Region {
  *
  * Used for situations where there are a regular arrangement of locations, like the grid of a chess board for example.
  */
-export class FixedAreaRegion extends BaseRegion {
+export class FixedAreaRegionDefinition extends BaseRegionDefinition {
     contains: string[];
-    subregions: Region[];
+    subregions: RegionDefinition[];
 
     constructor(
         id: string,
-        shape: RegionShape,
+        shape: RegionDefinitionShape,
     ) {
         super(id, shape)
         this.subregions = Array.from({length: shape!.cols}, (_, col) =>
@@ -95,27 +97,16 @@ export class FixedAreaRegion extends BaseRegion {
     }
 }
 
-/**
- * An instance of a Region within the Game State.
- *
- * Used to track stateful information about a Region during gameplay.
- */
-export interface RegionInstance {
-    id: RegionId;
-    contains?: string[];
-    state: Record<string, any>;
-}
-
-export function GenerateRegion(id:string, region: Region): Region {
+export function GenerateRegion(id:string, region: RegionDefinition): RegionDefinition {
     if (region.shape?.cols && region.shape?.rows) {
         const shape = region.subRegionShape || region.shape;
-        return new FixedAreaRegion(id, {
+        return new FixedAreaRegionDefinition(id, {
             rows: shape.rows,
             cols: shape.cols,
             state: shape.state || {}
         });
     } else {
-        return new BaseRegion(id, {rows: 0, cols: 0, state: region.shape?.state || {}}, region.subregions);
+        return new BaseRegionDefinition(id, {rows: 0, cols: 0, state: region.shape?.state || {}}, region.subregions);
     }
 }
 

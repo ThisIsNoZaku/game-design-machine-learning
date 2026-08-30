@@ -1,6 +1,6 @@
 import {DescriptionToDefinitionTransformer} from "../definitions/DescriptionToDefinitionTransformer";
 import {BaseGameDefinition, GameDefinition} from "../definitions/BaseGameDefinition";
-import {PLAY_AREA, Region} from "../definitions/Region";
+import {PLAY_AREA, RegionDefinition} from "../definitions/RegionDefinition";
 import {BoardMLGameSpecTopLevelDescription} from "../descriptions/GameDescription";
 import {ActionDescriptionExpansion} from "./ActionDescriptionExpansion";
 import {LocationDescriptionExpansion} from "./LocationDescriptionExpansion";
@@ -65,10 +65,10 @@ export class GameDescriptionExpansion implements DescriptionToDefinitionTransfor
     }
 
     private expandLocations(input: { [k: string]: AreaDescription }): {
-        play_area: Region;
-        [id: string]: Region
+        play_area: RegionDefinition;
+        [id: string]: RegionDefinition
     } {
-        const locations = Object.entries(input).reduce<{ play_area: Region, [id: string]: Region }>((acc, [id, area]) => {
+        const locations = Object.entries(input).reduce<{ play_area: RegionDefinition, [id: string]: RegionDefinition }>((acc, [id, area]) => {
             acc[id] = this.locationExpansion.transform({
                 ...area,
                 id

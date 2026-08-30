@@ -4,7 +4,7 @@ import {
     GameDefinitionMetadata,
     ResolvedActionSelection
 } from "../src/definitions/BaseGameDefinition";
-import {PLAY_AREA, Region} from "../src/definitions/Region";
+import {PLAY_AREA, RegionDefinition} from "../src/definitions/RegionDefinition";
 import {ActionDefinition} from "../src/definitions/ActionDefinition";
 import {GameState} from "../src/state";
 import SpecProvider from "../src/specification/SpecProvider";
@@ -12,7 +12,7 @@ import { FeatureSpec } from "../src/specification/ModelSpecs";
 
 export class Tictactoe implements GameDefinition, SpecProvider {
     readonly agents: Agents;
-    readonly locations: { [p: string]: Region };
+    readonly locations: { [p: string]: RegionDefinition };
     readonly metadata: GameDefinitionMetadata;
     readonly parameters: Record<string, string | number | boolean>;
 

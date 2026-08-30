@@ -1,7 +1,7 @@
 import {BaseGameDefinition, GameDefinition} from "../../../src/definitions/BaseGameDefinition";
 import tictactoe from "../../../examples/tictactoe.schema.json";
 import {GameState} from "../../../src/state/GameState";
-import {PLAY_AREA} from "../../../src/definitions/Region";
+import {PLAY_AREA} from "../../../src/definitions/RegionDefinition";
 
 describe("Tictactoe Model", () => {
     let game: GameDefinition;

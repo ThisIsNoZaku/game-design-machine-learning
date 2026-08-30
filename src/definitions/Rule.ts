@@ -1,7 +1,7 @@
 import Selector from "../Selector";
 import { AgentDefinition } from "./AgentDefinition";
 import {EntityDefinition} from "./EntityDefinition";
-import {Region} from "./Region";
+import {RegionDefinition} from "./RegionDefinition";
 
 /**
  * A rule that describes an instruction or constraint in the game.
@@ -51,8 +51,8 @@ export class EntityRuleTarget extends RuleTarget<EntityDefinition> {
     }
 }
 
-export class LocationRuleTarget extends RuleTarget<Region> {
-    constructor(type: string, filter: Selector<Region>) {
+export class LocationRuleTarget extends RuleTarget<RegionDefinition> {
+    constructor(type: string, filter: Selector<RegionDefinition>) {
         super(type, filter);
     }
 }

@@ -1,6 +1,6 @@
 import {ActionDefinition} from "./ActionDefinition";
 import {ConcreteGameState, GameState} from "../state/GameState";
-import {GenerateRegion, PLAY_AREA, Region, RegionId} from "./Region";
+import {GenerateRegion, PLAY_AREA, RegionDefinition, RegionId} from "./RegionDefinition";
 import {FeatureSpec} from "../specification/ModelSpecs";
 import SpecProvider from "../specification/SpecProvider";
 
@@ -35,7 +35,7 @@ export interface GameDefinition extends SpecProvider{
     readonly metadata: GameDefinitionMetadata;
     readonly parameters: Record<string, string | number | boolean>;
     readonly agents: Agents;
-    readonly locations: { [p: string]: Region };
+    readonly locations: { play_area: RegionDefinition, [p: string]: RegionDefinition };
 
     /**
      * Return the initial state of the game.
@@ -68,7 +68,7 @@ export class BaseGameDefinition implements GameDefinition, SpecProvider {
     private readonly _metadata: GameDefinitionMetadata;
     private readonly _parameters: Record<string, string | number | boolean>;
     private readonly _agents: Agents;
-    private readonly _locations: { [id: string]: Region };
+    private readonly _locations: { play_area: RegionDefinition, [id: string]: RegionDefinition };
 
 
     get actions(): Array<ActionDefinition> {
@@ -87,7 +87,7 @@ export class BaseGameDefinition implements GameDefinition, SpecProvider {
         return this._agents;
     }
 
-    get locations(): { [p: string]: Region } {
+    get locations(): { play_area: RegionDefinition, [p: string]: RegionDefinition } {
         return this._locations;
     }
 
@@ -95,7 +95,7 @@ export class BaseGameDefinition implements GameDefinition, SpecProvider {
                         parameters: Record<string, string | number | boolean>,
                         actions: Array<ActionDefinition>,
                         agents: Agents,
-                        locations: { [id: string]: Region }) {
+                        locations: { [id: string]: RegionDefinition }) {
         if (!locations) {
             throw new Error("Empty locations array not allowed!");
         }
@@ -104,16 +104,18 @@ export class BaseGameDefinition implements GameDefinition, SpecProvider {
         this._actions = actions;
         this._agents = agents;
 
-        const locationsMap: { [id: string]: Region } = {};
 
-        const playArea: Region = locationsMap[PLAY_AREA] = {
-            id: PLAY_AREA,
-            contains: []
+        const locationsMap: { play_area: RegionDefinition, [id: string]: RegionDefinition } = {
+            [PLAY_AREA]: {
+                id: PLAY_AREA,
+                contains: []
+            }
         };
-        const locationsToExpand:[string, Region, boolean][] = Object.entries(locations)
+        const playArea = locationsMap[PLAY_AREA];
+        const locationsToExpand:[string, RegionDefinition, boolean][] = Object.entries(locations)
             .map(([id, location]) => [id, location, true]);
         while(locationsToExpand.length > 0) {
-            const [id, location, isTopLevel] = locationsToExpand.shift() as [string, Region, boolean];
+            const [id, location, isTopLevel] = locationsToExpand.shift() as [string, RegionDefinition, boolean];
             const generatedRegion = GenerateRegion(id, location);
             locationsMap[id] = generatedRegion;
             if (isTopLevel) {
@@ -229,6 +231,9 @@ export class BaseGameDefinition implements GameDefinition, SpecProvider {
     static GenerateFromDefinition(definition: GameDefinition): [GameDefinition, GameState] {
         if (!definition.actions) {
             throw new Error("Game definition must define actions");
+        }
+        if(!definition.getInitialState()) {
+            throw new Error("Game definition must define getInitialState() to return a valid initial state");
         }
         return [
             definition,

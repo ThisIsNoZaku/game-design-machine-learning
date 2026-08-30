@@ -14,7 +14,7 @@
  */
 import {GameDefinition} from "./BaseGameDefinition";
 import {GameState} from "../state";
-import {RegionId} from "./Region";
+import {RegionId} from "./RegionDefinition";
 
 export type ExecutionContext = {
     game: GameDefinition;
