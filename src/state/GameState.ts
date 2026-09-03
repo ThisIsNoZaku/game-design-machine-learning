@@ -1,9 +1,10 @@
 import {ThingState} from "./ThingState";
 import {BaseGameDefinition, GameDefinition} from "../definitions/BaseGameDefinition";
-import {PLAY_AREA, RegionDefinition, RegionInstance} from "../definitions/RegionDefinition";
+import {PLAY_AREA, RegionDefinition} from "../definitions/RegionDefinition";
 import {v4} from "../uuid";
+import {PlayAreaInstance, RegionInstance} from "./RegionInstance";
 
-export type GameRegions = { playArea: RegionInstance & {id: "play_area"}, [id: string]: RegionInstance };
+export type GameRegions = { playArea: PlayAreaInstance & {id: "play_area"}, [id: string]: RegionInstance };
 
 export interface GameState {
     winners: string[];
@@ -69,14 +70,16 @@ export class ConcreteGameState implements  GameState{
             playArea : {
                 id: PLAY_AREA,
                 contains: [],
-                state: {...(initialState.regions[PLAY_AREA]?.state || {})}
+                state: {...(initialState.regions[PLAY_AREA]?.state || {})},
+                tags: new Set<string>()
             }
         };
         for (const location of Object.values(game.locations)) {
             locations[location.id] = {
                 id: location.id,
                 contains: location.contains,
-                state: {...(initialState.regions[location.id]?.state || {})}
+                state: {...(initialState.regions[location.id]?.state || {})},
+                tags: new Set<string>()
             };
         }
 

@@ -4,15 +4,17 @@ import {
     GameDefinitionMetadata,
     ResolvedActionSelection
 } from "../src/definitions/BaseGameDefinition";
-import {PLAY_AREA, RegionDefinition} from "../src/definitions/RegionDefinition";
+import {PLAY_AREA, PlayAreaDefinition, RegionDefinition, RegionId} from "../src/definitions/RegionDefinition";
 import {ActionDefinition} from "../src/definitions/ActionDefinition";
 import {GameState} from "../src/state";
 import SpecProvider from "../src/specification/SpecProvider";
-import { FeatureSpec } from "../src/specification/ModelSpecs";
+import {FeatureSpec } from "../src/specification/ModelSpecs";
+import {PlayAreaInstance} from "../src/state/RegionInstance";
+import {GameRegions} from "../src/state/GameState";
 
 export class Tictactoe implements GameDefinition, SpecProvider {
     readonly agents: Agents;
-    readonly locations: { [p: string]: RegionDefinition };
+    readonly locations: { [PLAY_AREA] : PlayAreaDefinition, [p: string]: RegionDefinition };
     readonly metadata: GameDefinitionMetadata;
     readonly parameters: Record<string, string | number | boolean>;
 
@@ -93,7 +95,7 @@ export class Tictactoe implements GameDefinition, SpecProvider {
     getObservation(state: GameState, actorId: string): GameState {
         void actorId;
 
-        const observedRegions = Object.fromEntries(
+        const observedRegions: GameRegions = Object.fromEntries(
             Object.entries(state.regions).map(([regionId, region]) => {
                 const regionState = region.state ?? {};
                 const value = typeof regionState["value"] === "number" ? regionState["value"] : 0;
@@ -106,8 +108,8 @@ export class Tictactoe implements GameDefinition, SpecProvider {
                     }
                 }];
             })
-        ) as Record<string, (typeof state.regions)[string]>;
-        const playArea = observedRegions[PLAY_AREA];
+        ) as unknown as GameRegions;
+        const playArea: PlayAreaInstance = observedRegions.playArea;
         if (!playArea) {
             throw new Error("Observation is missing required playArea region");
         }
@@ -158,13 +160,13 @@ export class Tictactoe implements GameDefinition, SpecProvider {
     }
 
     getInitialState(): GameState {
-        const initialRegions = Object.fromEntries(Object.entries(this.locations).map(([id, location]) => [id, {
+        const initialRegions: GameRegions = Object.fromEntries(Object.entries(this.locations).map(([id, location]) => [id, {
             ...location,
             state: {
                 value: 0
             }
-        }])) as Record<string, GameState["regions"][string]>;
-        const playArea = initialRegions[PLAY_AREA];
+        }])) as unknown as GameRegions;
+        const playArea = initialRegions.play_area;
         if (!playArea) {
             throw new Error("Initial state is missing required play_area region");
         }
@@ -182,7 +184,7 @@ export class Tictactoe implements GameDefinition, SpecProvider {
             entities: {},
             regions: {
                 ...initialRegions,
-                playArea
+                play_area: playArea
             },
             terminated: false,
             winners: []
